@@ -32,10 +32,10 @@ repo.newt_compatibility:
     # present.
     0.0.0:
         0.0.0: good
-    0.9.0:
-        1.7.0: good
-    0.9.1:
-        1.7.0: good
+#    0.9.0:
+#        1.7.0: good
+#    0.9.1:
+#        1.7.0: good
 
 repo.deps:
     apache-mynewt-core:
@@ -44,5 +44,5 @@ repo.deps:
         repo: mynewt-core
         vers:
             master: 1.7.0
-            uwb_dw1000_0_9_0_tag: 1.7.0
-            uwb_dw1000_0_9_1_tag: 1.7.0
+#            uwb_dw1000_0_9_0_tag: 1.7.0
+#            uwb_dw1000_0_9_1_tag: 1.7.0
