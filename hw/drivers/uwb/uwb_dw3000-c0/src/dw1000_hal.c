@@ -18,7 +18,7 @@
  */
 
 /**
- * @file dw1000_hal.c
+ * @file dw3000_hal.c
  * @author UWB Core <uwbcore@gmail.com>
  * @date 2018
  * @brief Hardware Abstraction Layer
@@ -35,23 +35,23 @@
 #include <syscfg/syscfg.h>
 #include <hal/hal_spi.h>
 #include <hal/hal_gpio.h>
-#include <dw1000/dw1000_hal.h>
+#include <dw3000-c0/dw3000_hal.h>
 #include <dpl/dpl_cputime.h>
 
 #include <mcu/mcu.h>
 
-#if MYNEWT_VAL(DW1000_DEVICE_0)
+#if MYNEWT_VAL(dw3000_DEVICE_0)
 
-static dw1000_dev_instance_t hal_dw1000_instances[]= {
-    #if  MYNEWT_VAL(DW1000_DEVICE_0)
+static dw3000_dev_instance_t hal_dw3000_instances[]= {
+    #if  MYNEWT_VAL(dw3000_DEVICE_0)
     [0] = {
             .uwb_dev = {
                 .idx = 0,
                 .task_prio = 0x10,
                 .status = {0},
-                .rx_antenna_delay = MYNEWT_VAL(DW1000_DEVICE_0_RX_ANT_DLY),
-                .tx_antenna_delay = MYNEWT_VAL(DW1000_DEVICE_0_TX_ANT_DLY),
-                .attrib = {                //!< These values are now set in dw1000_dev_init
+                .rx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_0_RX_ANT_DLY),
+                .tx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_0_TX_ANT_DLY),
+                .attrib = {                //!< These values are now set in dw3000_dev_init
                     .nsfd = 8,             //!< Number of symbols in start of frame delimiter
                     .nsync = 128,          //!< Number of symbols in preamble sequence
                     .nphr = 21             //!< Number of symbols in phy header
@@ -77,15 +77,15 @@ static dw1000_dev_instance_t hal_dw1000_instances[]= {
                     .txrf={
                         .PGdly = TC_PGDELAY_CH5,
                         //.power = 0x2A4A6A8A,
-                        .BOOSTNORM = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP500 = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP250 = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP125 = dw1000_power_value(DW1000_txrf_config_9db, 2.5)
+                        .BOOSTNORM = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP500 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP250 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP125 = dw3000_power_value(dw3000_txrf_config_9db, 2.5)
                     },
                     .trxoff_enable = 1,
                     .rxdiag_enable = 0,
                     .dblbuffon_enabled = 0,
-#if MYNEWT_VAL(DW1000_BIAS_CORRECTION_ENABLED)
+#if MYNEWT_VAL(dw3000_BIAS_CORRECTION_ENABLED)
                     .bias_correction_enable = 1,
 #endif
                     .LDE_enable = 1,
@@ -109,15 +109,15 @@ static dw1000_dev_instance_t hal_dw1000_instances[]= {
             },
             .spi_sem = 0,
     },
-    #if  MYNEWT_VAL(DW1000_DEVICE_1)
+    #if  MYNEWT_VAL(dw3000_DEVICE_1)
     [1] = {
             .uwb_dev = {
                 .idx = 1,
                 .task_prio = 0x11,
                 .status = {0},
-                .rx_antenna_delay = MYNEWT_VAL(DW1000_DEVICE_1_RX_ANT_DLY),
-                .tx_antenna_delay = MYNEWT_VAL(DW1000_DEVICE_1_TX_ANT_DLY),
-                .attrib = {                //!< These values are now set in dw1000_dev_init
+                .rx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_1_RX_ANT_DLY),
+                .tx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_1_TX_ANT_DLY),
+                .attrib = {                //!< These values are now set in dw3000_dev_init
                     .nsfd = 8,             //!< Number of symbols in start of frame delimiter
                     .nsync = 128,          //!< Number of symbols in preamble sequence
                     .nphr = 21             //!< Number of symbols in phy header
@@ -142,15 +142,15 @@ static dw1000_dev_instance_t hal_dw1000_instances[]= {
                     },
                     .txrf={
                         .PGdly = TC_PGDELAY_CH5,
-                        .BOOSTNORM = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP500 = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP250 = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP125 = dw1000_power_value(DW1000_txrf_config_9db, 2.5)
+                        .BOOSTNORM = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP500 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP250 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP125 = dw3000_power_value(dw3000_txrf_config_9db, 2.5)
                     },
                     .trxoff_enable = 1,
                     .rxdiag_enable = 1,
                     .dblbuffon_enabled = 0,
-#if MYNEWT_VAL(DW1000_BIAS_CORRECTION_ENABLED)
+#if MYNEWT_VAL(dw3000_BIAS_CORRECTION_ENABLED)
                     .bias_correction_enable = 1,
 #endif
                     .LDE_enable = 1,
@@ -174,14 +174,14 @@ static dw1000_dev_instance_t hal_dw1000_instances[]= {
             },
             .spi_sem = 0,
     },
-    #if  MYNEWT_VAL(DW1000_DEVICE_2)
+    #if  MYNEWT_VAL(dw3000_DEVICE_2)
     [2] = {
                 .idx = 2,
                 .task_prio = 0x12,
                 .status = {0},
-                .rx_antenna_delay = MYNEWT_VAL(DW1000_DEVICE_2_RX_ANT_DLY),
-                .tx_antenna_delay = MYNEWT_VAL(DW1000_DEVICE_2_TX_ANT_DLY),
-                .attrib = {                //!< These values are now set in dw1000_dev_init
+                .rx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_2_RX_ANT_DLY),
+                .tx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_2_TX_ANT_DLY),
+                .attrib = {                //!< These values are now set in dw3000_dev_init
                     .nsfd = 8,             //!< Number of symbols in start of frame delimiter
                     .nsync = 128,          //!< Number of symbols in preamble sequence
                     .nphr = 21             //!< Number of symbols in phy header
@@ -206,15 +206,15 @@ static dw1000_dev_instance_t hal_dw1000_instances[]= {
                     },
                     .txrf={
                         .PGdly = TC_PGDELAY_CH5,
-                        .BOOSTNORM = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP500 = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP250 = dw1000_power_value(DW1000_txrf_config_9db, 2.5),
-                        .BOOSTP125 = dw1000_power_value(DW1000_txrf_config_9db, 2.5)
+                        .BOOSTNORM = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP500 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP250 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
+                        .BOOSTP125 = dw3000_power_value(dw3000_txrf_config_9db, 2.5)
                     },
                     .trxoff_enable = 1,
                     .rxdiag_enable = 1,
                     .dblbuffon_enabled = 0,
-#if MYNEWT_VAL(DW1000_BIAS_CORRECTION_ENABLED)
+#if MYNEWT_VAL(dw3000_BIAS_CORRECTION_ENABLED)
                     .bias_correction_enable = 1,
 #endif
                     .LDE_enable = 1,
@@ -244,20 +244,20 @@ static dw1000_dev_instance_t hal_dw1000_instances[]= {
 };
 #endif
 
-#if MYNEWT_VAL(DW1000_DEVICE_0) || MYNEWT_VAL(DW1000_DEVICE_1) || MYNEWT_VAL(DW1000_DEVICE_2)
+#if MYNEWT_VAL(dw3000_DEVICE_0) || MYNEWT_VAL(dw3000_DEVICE_1) || MYNEWT_VAL(dw3000_DEVICE_2)
 
 /**
- * API to choose DW1000 instances based on parameters.
+ * API to choose dw3000 instances based on parameters.
  *
  * @param idx  Indicates number of instances for the chosen bsp.
- * @return dw1000_dev_instance_t
+ * @return dw3000_dev_instance_t
  */
 
-struct _dw1000_dev_instance_t *
-hal_dw1000_inst(uint8_t idx)
+struct _dw3000_dev_instance_t *
+hal_dw3000_inst(uint8_t idx)
 {
-    if (idx < ARRAY_SIZE(hal_dw1000_instances)) {
-        return &hal_dw1000_instances[idx];
+    if (idx < ARRAY_SIZE(hal_dw3000_instances)) {
+        return &hal_dw3000_instances[idx];
     }
     return 0;
 }
@@ -265,11 +265,11 @@ hal_dw1000_inst(uint8_t idx)
 /**
  * API to reset all the gpio pins.
  *
- * @param inst  Pointer to dw1000_dev_instance_t.
+ * @param inst  Pointer to dw3000_dev_instance_t.
  * @return void
  */
 void
-hal_dw1000_reset(struct _dw1000_dev_instance_t * inst)
+hal_dw3000_reset(struct _dw3000_dev_instance_t * inst)
 {
     assert(inst);
 
@@ -287,7 +287,7 @@ hal_dw1000_reset(struct _dw1000_dev_instance_t * inst)
 /**
  * API to perform a blocking read over SPI
  *
- * @param inst      Pointer to dw1000_dev_instance_t.
+ * @param inst      Pointer to dw3000_dev_instance_t.
  * @param cmd       Represents an array of masked attributes like reg,subindex,operation,extended,subaddress.
  * @param cmd_size  Represents value based on the cmd attributes.
  * @param buffer    Results are stored into the buffer.
@@ -295,7 +295,7 @@ hal_dw1000_reset(struct _dw1000_dev_instance_t * inst)
  * @return int      DPL_OK if read is ok, error otherwise
  */
 int
-hal_dw1000_read(struct _dw1000_dev_instance_t * inst,
+hal_dw3000_read(struct _dw3000_dev_instance_t * inst,
                 const uint8_t * cmd, uint8_t cmd_size,
                 uint8_t * buffer, uint16_t length)
 {
@@ -306,14 +306,14 @@ hal_dw1000_read(struct _dw1000_dev_instance_t * inst,
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    DW1000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 0);
+    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 0);
 
     hal_gpio_write(inst->ss_pin, 0);
 
 #if !defined(MYNEWT)
     /* Linux mode really, for when we can't split the command and data */
     assert(cmd_size + length < inst->uwb_dev.txbuf_size);
-    assert(cmd_size + length < MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT));
+    assert(cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT));
 
     memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
     memset(inst->uwb_dev.txbuf + cmd_size, 0, length);
@@ -324,8 +324,8 @@ hal_dw1000_read(struct _dw1000_dev_instance_t * inst,
 #else
     rc = hal_spi_txrx(inst->spi_num, (void*)cmd, 0, cmd_size);
     assert(rc == DPL_OK);
-    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT)) ?
-        MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
+    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) ?
+        MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
     int bytes_left = length;
     for (int offset = 0;offset<length && rc == DPL_OK;offset+=step) {
         int bytes_to_read = (bytes_left > step) ? step : bytes_left;
@@ -335,7 +335,7 @@ hal_dw1000_read(struct _dw1000_dev_instance_t * inst,
 #endif
     hal_gpio_write(inst->ss_pin, 1);
 
-    DW1000_SPI_BT_ADD_END(inst);
+    dw3000_SPI_BT_ADD_END(inst);
     rc = dpl_sem_release(inst->spi_sem);
     assert(rc == DPL_OK);
 early_exit:
@@ -350,10 +350,10 @@ early_exit:
  * @return void
  */
 void
-hal_dw1000_spi_txrx_cb(void *arg, int len)
+hal_dw3000_spi_txrx_cb(void *arg, int len)
 {
     dpl_error_t err;
-    struct _dw1000_dev_instance_t * inst = arg;
+    struct _dw3000_dev_instance_t * inst = arg;
     assert(inst!=0);
 
     /* Check for longer nonblocking read/write op */
@@ -362,7 +362,7 @@ hal_dw1000_spi_txrx_cb(void *arg, int len)
         assert(err == DPL_OK);
     } else {
         hal_gpio_write(inst->ss_pin, 1);
-        DW1000_SPI_BT_ADD_END(inst);
+        dw3000_SPI_BT_ADD_END(inst);
         err = dpl_sem_release(inst->spi_sem);
         assert(err == DPL_OK);
     }
@@ -372,7 +372,7 @@ hal_dw1000_spi_txrx_cb(void *arg, int len)
 /**
  * API to perform a non-blocking read from SPI
  *
- * @param inst      Pointer to dw1000_dev_instance_t.
+ * @param inst      Pointer to dw3000_dev_instance_t.
  * @param cmd       Represents an array of masked attributes like reg,subindex,operation,extended,subaddress.
  * @param cmd_size  Represents value based on the cmd attributes.
  * @param buffer    Results are stored into the buffer.
@@ -380,7 +380,7 @@ hal_dw1000_spi_txrx_cb(void *arg, int len)
  * @return int      DPL_OK if read is ok, error otherwise
  */
 int
-hal_dw1000_read_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length)
+hal_dw3000_read_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length)
 {
     int rc = DPL_OK;
     assert(inst->spi_sem);
@@ -390,12 +390,12 @@ hal_dw1000_read_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cm
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    DW1000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 1);
+    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 1);
 
     /* Reset the txrx_cb to make sure it has the correct instance
      * as argument */
     rc = hal_spi_disable(inst->spi_num);
-    rc |= hal_spi_set_txrx_cb(inst->spi_num, hal_dw1000_spi_txrx_cb, (void*)inst);
+    rc |= hal_spi_set_txrx_cb(inst->spi_num, hal_dw3000_spi_txrx_cb, (void*)inst);
     rc |= hal_spi_enable(inst->spi_num);
     if (rc != DPL_OK) {
         goto err_return;
@@ -405,7 +405,7 @@ hal_dw1000_read_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cm
 
     /* Faster read for shorter exchanges */
     if (cmd_size + length < inst->uwb_dev.txbuf_size &&
-        cmd_size + length < MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT)) {
+        cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) {
         memset(inst->uwb_dev.txbuf, 0, cmd_size + length);
         memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
 
@@ -428,13 +428,13 @@ hal_dw1000_read_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cm
         hal_gpio_write(inst->ss_pin, 1);
 
         memcpy(buffer, inst->uwb_dev.txbuf + cmd_size, length);
-        DW1000_SPI_BT_ADD_END(inst);
+        dw3000_SPI_BT_ADD_END(inst);
         rc = dpl_sem_release(inst->spi_sem);
         assert(rc == DPL_OK);
         return rc;
     }
 
-#if MYNEWT_VAL(DW1000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT) < 1028
+#if MYNEWT_VAL(dw3000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) < 1028
     rc = dpl_sem_pend(&inst->spi_nb_sem, DPL_TIMEOUT_NEVER);
     if (rc != DPL_OK) {
         inst->uwb_dev.status.sem_error = 1;
@@ -457,12 +457,12 @@ hal_dw1000_read_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cm
     rc = dpl_sem_release(&inst->spi_nb_sem);
     assert(rc == DPL_OK);
 
-    /* Nonblocking reads can only do a maximum of MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT)
+    /* Nonblocking reads can only do a maximum of MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)
      * bytes at a time. And
      * not read more than what can fit in the inst->uwb_dev.txbuf at a time.
      * TODO: Use SPIM_TXD_MAXCNT_MAX instead? */
-    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT))?
-        MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
+    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT))?
+        MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
     int bytes_left = length;
     int offset = 0;
     while (offset<length) {
@@ -516,7 +516,7 @@ early_exit:
 /**
  * API to perform a blocking write over SPI
  *
- * @param inst      Pointer to dw1000_dev_instance_t.
+ * @param inst      Pointer to dw3000_dev_instance_t.
  * @param cmd       Represents an array of masked attributes like reg,subindex,operation,extended,subaddress.
  * @param cmd_size  Length of command array
  * @param buffer    Data buffer to be sent to device
@@ -524,7 +524,7 @@ early_exit:
  * @return int      DPL_OK if read is ok, error otherwise
  */
 int
-hal_dw1000_write(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length)
+hal_dw3000_write(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length)
 {
     int rc = DPL_OK;
     assert(inst->spi_sem);
@@ -533,14 +533,14 @@ hal_dw1000_write(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    DW1000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 0);
+    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 0);
 
     hal_gpio_write(inst->ss_pin, 0);
 
 #if !defined(MYNEWT)
     /* Linux mode really, for when we can't split the command and data */
     assert(cmd_size + length < inst->uwb_dev.txbuf_size);
-    assert(cmd_size + length < MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT));
+    assert(cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT));
 
     memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
     memcpy(inst->uwb_dev.txbuf+cmd_size, buffer, length);
@@ -558,7 +558,7 @@ hal_dw1000_write(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint
 
     hal_gpio_write(inst->ss_pin, 1);
 
-    DW1000_SPI_BT_ADD_END(inst);
+    dw3000_SPI_BT_ADD_END(inst);
     rc = dpl_sem_release(inst->spi_sem);
     assert(rc == DPL_OK);
 early_exit:
@@ -569,7 +569,7 @@ early_exit:
 /**
  * API to perform a nonblocking write over SPI
  *
- * @param inst      Pointer to dw1000_dev_instance_t.
+ * @param inst      Pointer to dw3000_dev_instance_t.
  * @param cmd       Represents an array of masked attributes like reg,subindex,operation,extended,subaddress.
  * @param cmd_size  Length of command array
  * @param buffer    Data buffer to be sent to device
@@ -577,7 +577,7 @@ early_exit:
  * @return int      DPL_OK if read is ok, error otherwise
  */
 int
-hal_dw1000_write_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length)
+hal_dw3000_write_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length)
 {
     int rc = DPL_OK;
     assert(length);
@@ -587,12 +587,12 @@ hal_dw1000_write_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * c
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    DW1000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 1);
+    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 1);
 
     /* Reset the txrx_cb to make sure it has the correct instance
      * as argument */
     rc = hal_spi_disable(inst->spi_num);
-    rc |= hal_spi_set_txrx_cb(inst->spi_num, hal_dw1000_spi_txrx_cb, (void*)inst);
+    rc |= hal_spi_set_txrx_cb(inst->spi_num, hal_dw3000_spi_txrx_cb, (void*)inst);
     rc |= hal_spi_enable(inst->spi_num);
     if (rc != DPL_OK) {
         goto err_return;
@@ -602,7 +602,7 @@ hal_dw1000_write_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * c
 
     /* If command and data fit in inst->uwb_dev.txbuf, send immediately */
     if (cmd_size + length < inst->uwb_dev.txbuf_size &&
-        cmd_size + length < MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT)) {
+        cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) {
         memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
         memcpy(inst->uwb_dev.txbuf+cmd_size, buffer, length);
 
@@ -611,7 +611,7 @@ hal_dw1000_write_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * c
         return rc;
     }
 
-#if MYNEWT_VAL(DW1000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT) < 1028
+#if MYNEWT_VAL(dw3000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) < 1028
     rc = dpl_sem_pend(&inst->spi_nb_sem, DPL_TIMEOUT_NEVER);
     if (rc != DPL_OK) {
         inst->uwb_dev.status.sem_error = 1;
@@ -630,10 +630,10 @@ hal_dw1000_write_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * c
     rc = dpl_sem_release(&inst->spi_nb_sem);
     assert(rc == DPL_OK);
 
-    /* Nonblocking writes can only do a maximum of MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT)
+    /* Nonblocking writes can only do a maximum of MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)
      * bytes at a time */
-    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT)) ?
-        MYNEWT_VAL(DW1000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
+    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) ?
+        MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
     int bytes_left = length;
     int offset = 0;
     while (offset<length) {
@@ -681,12 +681,12 @@ err_return:
 /**
  * API to wait for a DMA transfer
  *
- * @param inst  Pointer to dw1000_dev_instance_t.
+ * @param inst  Pointer to dw3000_dev_instance_t.
  * @param timeout  Time in ms to wait, use DPL_TIMEOUT_NEVER (UINT32_MAX) to wait indefinitely
  * @return int  Returns 0 on success, error code otherwise
  */
 int
-hal_dw1000_rw_noblock_wait(struct _dw1000_dev_instance_t * inst, uint32_t timeout_ms)
+hal_dw3000_rw_noblock_wait(struct _dw3000_dev_instance_t * inst, uint32_t timeout_ms)
 {
     int err;
     dpl_time_t ticks;
@@ -704,13 +704,13 @@ hal_dw1000_rw_noblock_wait(struct _dw1000_dev_instance_t * inst, uint32_t timeou
 
 
 /**
- * API to wake dw1000 from sleep mode
+ * API to wake dw3000 from sleep mode
  *
- * @param inst  Pointer to dw1000_dev_instance_t.
+ * @param inst  Pointer to dw3000_dev_instance_t.
  * @return int  DPL_OK if read is ok, error otherwise
  */
 int
-hal_dw1000_wakeup(struct _dw1000_dev_instance_t * inst)
+hal_dw3000_wakeup(struct _dw3000_dev_instance_t * inst)
 {
     int rc = DPL_OK;
     os_sr_t sr;
@@ -746,13 +746,13 @@ early_exit:
 
 /**
  * API to read the current level of the rst pin.
- * When sleeping dw1000 will let this pin go low.
+ * When sleeping dw3000 will let this pin go low.
  *
- * @param inst  Pointer to dw1000_dev_instance_t
+ * @param inst  Pointer to dw3000_dev_instance_t
  * @return status of rst_pin
  */
 int
-hal_dw1000_get_rst(struct _dw1000_dev_instance_t * inst)
+hal_dw3000_get_rst(struct _dw3000_dev_instance_t * inst)
 {
     return hal_gpio_read(inst->rst_pin);
 }

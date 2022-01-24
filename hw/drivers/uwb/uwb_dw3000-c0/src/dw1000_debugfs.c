@@ -27,8 +27,8 @@
 #include <linux/kernel.h>
 #include <linux/debugfs.h>
 #include "uwbcore.h"
-#include <dw1000/dw1000_hal.h>
-#include "dw1000_cli_priv.h"
+#include <dw3000-c0/dw3000_hal.h>
+#include "dw3000_cli_priv.h"
 #include <linux/seq_file.h>
 
 #define slog(fmt, ...) \
@@ -74,10 +74,10 @@ static struct streamer streamer_debugfs = {
 
 static int cmd_dump(struct seq_file *s, void *data)
 {
-    struct _dw1000_dev_instance_t *inst;
+    struct _dw3000_dev_instance_t *inst;
     struct debug_cmd *cmd = (struct debug_cmd*) s->private;
     seq_file = s;
-    inst = hal_dw1000_inst(cmd->idx);
+    inst = hal_dw3000_inst(cmd->idx);
     if (!inst) {
         return 0;
     }
@@ -86,23 +86,23 @@ static int cmd_dump(struct seq_file *s, void *data)
     }
 
     if (!strcmp(cmd->fn, "dump")) {
-        dw1000_cli_dump_registers(inst, &streamer_debugfs);
+        dw3000_cli_dump_registers(inst, &streamer_debugfs);
     }
     if (!strcmp(cmd->fn, "ev")) {
-        dw1000_cli_dump_event_counters(inst, &streamer_debugfs);
+        dw3000_cli_dump_event_counters(inst, &streamer_debugfs);
     }
     if (!strcmp(cmd->fn, "da")) {
         if (da_addr > 0x3F) da_addr = 0x3F;
-        dw1000_cli_dump_address(inst, da_addr, da_length, &streamer_debugfs);
+        dw3000_cli_dump_address(inst, da_addr, da_length, &streamer_debugfs);
     }
-#if MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
     if (!strcmp(cmd->fn, "ibt")) {
-        dw1000_cli_interrupt_backtrace(inst, 1, &streamer_debugfs);
+        dw3000_cli_interrupt_backtrace(inst, 1, &streamer_debugfs);
     }
 #endif
-#if MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
     if (!strcmp(cmd->fn, "bt")) {
-        dw1000_cli_backtrace(inst, 1, &streamer_debugfs);
+        dw3000_cli_backtrace(inst, 1, &streamer_debugfs);
     }
 #endif
 
@@ -146,21 +146,21 @@ static char* cmd_names[] = {
 };
 
 static char* dir_names[] = {
-    "dw1000_cli0",
-    "dw1000_cli1",
-    "dw1000_cli2",
+    "dw3000_cli0",
+    "dw3000_cli1",
+    "dw3000_cli2",
     0
 };
 
 static struct debug_cmd cmd_s[ARRAY_SIZE(dir_names)*ARRAY_SIZE(cmd_names)];
 
 
-void dw1000_debugfs_init(void)
+void dw3000_debugfs_init(void)
 {
     int i, j, k = 0;
-    struct _dw1000_dev_instance_t *inst;
+    struct _dw3000_dev_instance_t *inst;
     for (i=0;dir_names[i];i++) {
-        inst = hal_dw1000_inst(i);
+        inst = hal_dw3000_inst(i);
         if (!inst) continue;
         if (!inst->uwb_dev.status.initialized) continue;
 
@@ -190,7 +190,7 @@ void dw1000_debugfs_init(void)
     }
 }
 
-void dw1000_debugfs_deinit(void)
+void dw3000_debugfs_deinit(void)
 {
     if (dir) {
         debugfs_remove_recursive(dir);

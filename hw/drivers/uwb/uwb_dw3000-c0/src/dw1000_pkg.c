@@ -18,12 +18,12 @@
  */
 
 /**
- * @file dw1000_pkg.c
+ * @file dw3000_pkg.c
  * @author UWB Core <uwbcore@gmail.com>
  * @date 2018
  * @brief package file
  *
- * @details This is the pkg class which utilises the function to initialize the dw1000 instances depending on the availability.
+ * @details This is the pkg class which utilises the function to initialize the dw3000 instances depending on the availability.
  */
 
 #include <stdio.h>
@@ -33,13 +33,13 @@
 #include <dpl/dpl_cputime.h>
 #include <hal/hal_spi.h>
 #include <hal/hal_gpio.h>
-#include <dw1000/dw1000_dev.h>
-#include <dw1000/dw1000_regs.h>
-#include <dw1000/dw1000_hal.h>
-#include <dw1000/dw1000_phy.h>
+#include <dw3000-c0/dw3000_dev.h>
+#include <dw3000-c0/dw3000_regs.h>
+#include <dw3000-c0/dw3000_hal.h>
+#include <dw3000-c0/dw3000_phy.h>
 
-int dw1000_cli_register(void);
-int dw1000_cli_down(int reason);
+int dw3000_cli_register(void);
+int dw3000_cli_down(int reason);
 
 #define DIAGMSG(s,u) printf(s,u)
 #ifndef DIAGMSG
@@ -47,72 +47,72 @@ int dw1000_cli_down(int reason);
 #endif
 
 /**
- * API to initialize the dw1000 instances.
+ * API to initialize the dw3000 instances.
  *
  * @param void
  * @return void
  */
-void dw1000_pkg_init(void)
+void dw3000_pkg_init(void)
 {
 #if defined(MYNEWT)
 
 #if MYNEWT_VAL(UWB_PKG_INIT_LOG)
-    DIAGMSG("{\"utime\": %lu,\"msg\": \"dw1000_pkg_init\"}\n", dpl_cputime_ticks_to_usecs(dpl_cputime_get32()));
+    DIAGMSG("{\"utime\": %lu,\"msg\": \"dw3000_pkg_init\"}\n", dpl_cputime_ticks_to_usecs(dpl_cputime_get32()));
 #endif
 
-#if MYNEWT_VAL(DW1000_DEVICE_0)
-    dw1000_dev_config(hal_dw1000_inst(0));
+#if MYNEWT_VAL(dw3000_DEVICE_0)
+    dw3000_dev_config(hal_dw3000_inst(0));
 #endif
-#if MYNEWT_VAL(DW1000_DEVICE_1)
-    dw1000_dev_config(hal_dw1000_inst(1));
+#if MYNEWT_VAL(dw3000_DEVICE_1)
+    dw3000_dev_config(hal_dw3000_inst(1));
 #endif
-#if MYNEWT_VAL(DW1000_DEVICE_2)
-    dw1000_dev_config(hal_dw1000_inst(2));
+#if MYNEWT_VAL(dw3000_DEVICE_2)
+    dw3000_dev_config(hal_dw3000_inst(2));
 #endif
 
 #else
     struct os_dev *dev;
 
-    dev = os_dev_lookup("dw1000_0");
+    dev = os_dev_lookup("dw3000_0");
     if (dev) {
-        dw1000_dev_config((struct _dw1000_dev_instance_t*)dev);
+        dw3000_dev_config((struct _dw3000_dev_instance_t*)dev);
     }
-    dev = os_dev_lookup("dw1000_1");
+    dev = os_dev_lookup("dw3000_1");
     if (dev) {
-        dw1000_dev_config((struct _dw1000_dev_instance_t*)dev);
+        dw3000_dev_config((struct _dw3000_dev_instance_t*)dev);
     }
-    dev = os_dev_lookup("dw1000_2");
+    dev = os_dev_lookup("dw3000_2");
     if (dev) {
-        dw1000_dev_config((struct _dw1000_dev_instance_t*)dev);
+        dw3000_dev_config((struct _dw3000_dev_instance_t*)dev);
     }
 #endif
 
-#if MYNEWT_VAL(DW1000_CLI)
-    dw1000_cli_register();
+#if MYNEWT_VAL(dw3000_CLI)
+    dw3000_cli_register();
 #endif
 }
 
-int dw1000_pkg_down(int reason)
+int dw3000_pkg_down(int reason)
 {
     struct os_dev *dev;
 #if MYNEWT_VAL(UWB_PKG_INIT_LOG)
-    DIAGMSG("{\"utime\": %"PRIu32",\"msg\": \"dw1000_pkg_down\"}\n", dpl_cputime_ticks_to_usecs(dpl_cputime_get32()));
+    DIAGMSG("{\"utime\": %"PRIu32",\"msg\": \"dw3000_pkg_down\"}\n", dpl_cputime_ticks_to_usecs(dpl_cputime_get32()));
 #endif
 
-    dev = os_dev_lookup("dw1000_0");
+    dev = os_dev_lookup("dw3000_0");
     if (dev) {
-        dw1000_dev_deinit((struct _dw1000_dev_instance_t *)dev);
+        dw3000_dev_deinit((struct _dw3000_dev_instance_t *)dev);
     }
-    dev = os_dev_lookup("dw1000_1");
+    dev = os_dev_lookup("dw3000_1");
     if (dev) {
-        dw1000_dev_deinit((struct _dw1000_dev_instance_t *)dev);
+        dw3000_dev_deinit((struct _dw3000_dev_instance_t *)dev);
     }
-    dev = os_dev_lookup("dw1000_2");
+    dev = os_dev_lookup("dw3000_2");
     if (dev) {
-        dw1000_dev_deinit((struct _dw1000_dev_instance_t *)dev);
+        dw3000_dev_deinit((struct _dw3000_dev_instance_t *)dev);
     }
-#if MYNEWT_VAL(DW1000_CLI)
-    dw1000_cli_down(reason);
+#if MYNEWT_VAL(dw3000_CLI)
+    dw3000_cli_down(reason);
 #endif
     return 0;
 }

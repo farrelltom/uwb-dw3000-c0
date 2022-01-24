@@ -24,26 +24,26 @@
 #include <linux/fs.h>
 #include <linux/kernel.h>
 #include "uwbcore.h"
-#include <dw1000/dw1000_hal.h>
-#include "dw1000_cli_priv.h"
+#include <dw3000-c0/dw3000_hal.h>
+#include "dw3000_cli_priv.h"
 
 #define slog(fmt, ...) \
     pr_info("uwbcore: %s(): %d: "fmt, __func__, __LINE__, ##__VA_ARGS__)
 
-struct dw1000cli_sysfs_data {
+struct dw3000cli_sysfs_data {
     struct kobject *kobj;
     char device_name[16];
     struct mutex local_lock;
-    struct _dw1000_dev_instance_t *inst;
+    struct _dw3000_dev_instance_t *inst;
 
     struct kobj_attribute *dev_attr_cfg;
     struct attribute** attrs;
     struct attribute_group attribute_group;
 };
 
-static struct dw1000cli_sysfs_data dw1000cli_sysfs_inst[MYNEWT_VAL(UWB_DEVICE_MAX)] = {0};
+static struct dw3000cli_sysfs_data dw3000cli_sysfs_inst[MYNEWT_VAL(UWB_DEVICE_MAX)] = {0};
 
-static struct dw1000cli_sysfs_data* get_instance(struct kobject* kobj)
+static struct dw3000cli_sysfs_data* get_instance(struct kobject* kobj)
 {
     struct kobject* ko = kobj;
     /* Walk up in parent objects until they end with a number we can use
@@ -53,7 +53,7 @@ static struct dw1000cli_sysfs_data* get_instance(struct kobject* kobj)
         if (s >= '0' && s<= '9') {
             u8 i = s-'0';
             if (i<MYNEWT_VAL(UWB_DEVICE_MAX)) {
-                return &dw1000cli_sysfs_inst[i];
+                return &dw3000cli_sysfs_inst[i];
             }
         }
         ko = ko->parent;
@@ -67,8 +67,8 @@ static ssize_t cmd_show(struct kobject *kobj,
     int gpio_num;
     unsigned int copied;
     const char nodev_errmsg[] = "err, no device\n";
-    struct dw1000cli_sysfs_data *ed;
-    struct _dw1000_dev_instance_t *inst;
+    struct dw3000cli_sysfs_data *ed;
+    struct _dw3000_dev_instance_t *inst;
 
     ed = get_instance(kobj);
     if (!ed) {
@@ -99,12 +99,12 @@ static ssize_t cmd_show(struct kobject *kobj,
         gpio_num = attr->attr.name[4] - '0';
         slog("gpio %d", gpio_num);
         if (!strncmp(attr->attr.name+5, "_mode", 5)) {
-            snprintf(buf, PAGE_SIZE, "%d\n", dw1000_gpio_get_mode(inst, gpio_num));
+            snprintf(buf, PAGE_SIZE, "%d\n", dw3000_gpio_get_mode(inst, gpio_num));
         } else if (!strncmp(attr->attr.name+5, "_dir", 5)) {
             /* Invert value as 1=input, 0=output for dwX000 */
-            snprintf(buf, PAGE_SIZE, "%d\n", !dw1000_gpio_get_direction(inst, gpio_num));
+            snprintf(buf, PAGE_SIZE, "%d\n", !dw3000_gpio_get_direction(inst, gpio_num));
         } else {
-            snprintf(buf, PAGE_SIZE, "%d\n", dw1000_gpio_read(inst, gpio_num));
+            snprintf(buf, PAGE_SIZE, "%d\n", dw3000_gpio_read(inst, gpio_num));
         }
     }
 
@@ -117,8 +117,8 @@ static ssize_t cmd_store(struct kobject *kobj,
     int gpio_num;
     int ret;
     u64 res;
-    struct dw1000cli_sysfs_data *ed;
-    struct _dw1000_dev_instance_t *inst;
+    struct dw3000cli_sysfs_data *ed;
+    struct _dw3000_dev_instance_t *inst;
 
     ed = get_instance(kobj);
     if (!ed) {
@@ -151,19 +151,19 @@ static ssize_t cmd_store(struct kobject *kobj,
     }
 
     if (!strcmp(attr->attr.name, "cw")) {
-        dw1000_write_reg(inst, SYS_MASK_ID, 0, 0, sizeof(uint32_t));
-        dw1000_write_reg(inst, SYS_CTRL_ID, SYS_CTRL_OFFSET, SYS_CTRL_TRXOFF, sizeof(uint8_t));
-        dw1000_configcwmode(inst, inst->uwb_dev.config.channel);
+        dw3000_write_reg(inst, SYS_MASK_ID, 0, 0, sizeof(uint32_t));
+        dw3000_write_reg(inst, SYS_CTRL_ID, SYS_CTRL_OFFSET, SYS_CTRL_TRXOFF, sizeof(uint8_t));
+        dw3000_configcwmode(inst, inst->uwb_dev.config.channel);
         slog("Device now in CW mode on ch %d. Reset to continue\n",
              inst->uwb_dev.config.channel);
 
     }
 
-#if MYNEWT_VAL(DW1000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
     if (!strcmp(attr->attr.name, "ev")) {
         ret = kstrtoll(buf, 0, &res);
         if (!ret) {
-            dw1000_phy_event_cnt_ctrl(inst, (res != 0), true);
+            dw3000_phy_event_cnt_ctrl(inst, (res != 0), true);
         }
     }
 #endif
@@ -176,14 +176,14 @@ static ssize_t cmd_store(struct kobject *kobj,
         }
         if (!strncmp(attr->attr.name+5, "_mode", 5) && res < 5) {
             slog("gpio %d mode %"PRIu64, gpio_num, res);
-            dw1000_gpio_set_mode(inst, gpio_num, res);
+            dw3000_gpio_set_mode(inst, gpio_num, res);
         } else if (!strncmp(attr->attr.name+5, "_dir", 5) && res < 2) {
             /* Invert value as 1=input, 0=output for dwX000 */
-            dw1000_gpio_set_direction(inst, gpio_num, (res==0));
+            dw3000_gpio_set_direction(inst, gpio_num, (res==0));
             slog("gpio(%d): %s\n", gpio_num, (res==0)?"in":"out");
         } else {
             slog("gpio %d write %"PRIu64, gpio_num, res);
-            dw1000_gpio_init_out(inst, gpio_num, res);
+            dw3000_gpio_init_out(inst, gpio_num, res);
         }
     }
 
@@ -213,7 +213,7 @@ static const char* rw_attr[] = {
     "uid",
     "euid",
     "cw",
-#if MYNEWT_VAL(DW1000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
     "ev",
 #endif
     "gpio0_mode", "gpio1_mode", "gpio2_mode",
@@ -227,17 +227,17 @@ static const char* rw_attr[] = {
     "gpio6", "gpio7", "gpio8"
 };
 
-int dw1000_sysfs_init(struct _dw1000_dev_instance_t *inst)
+int dw3000_sysfs_init(struct _dw3000_dev_instance_t *inst)
 {
     int ret, i, k;
-    struct dw1000cli_sysfs_data *ed;
-    if (inst->uwb_dev.idx >= ARRAY_SIZE(dw1000cli_sysfs_inst)) {
+    struct dw3000cli_sysfs_data *ed;
+    if (inst->uwb_dev.idx >= ARRAY_SIZE(dw3000cli_sysfs_inst)) {
         return -EINVAL;
     }
-    ed = &dw1000cli_sysfs_inst[inst->uwb_dev.idx];
+    ed = &dw3000cli_sysfs_inst[inst->uwb_dev.idx];
     ed->inst = inst;
 
-    snprintf(ed->device_name, sizeof(ed->device_name)-1, "dw1000_cli%d", inst->uwb_dev.idx);
+    snprintf(ed->device_name, sizeof(ed->device_name)-1, "dw3000_cli%d", inst->uwb_dev.idx);
     ed->kobj = kobject_create_and_add(ed->device_name, uwbcore_get_kobj());
     if (!ed->kobj) {
         slog("Failed to create %s\n", ed->device_name);
@@ -286,13 +286,13 @@ err_dev_attr_cfg:
     return -ENOMEM;
 }
 
-void dw1000_sysfs_deinit(int idx)
+void dw3000_sysfs_deinit(int idx)
 {
-    struct dw1000cli_sysfs_data *ed;
-    if (idx >= ARRAY_SIZE(dw1000cli_sysfs_inst)) {
+    struct dw3000cli_sysfs_data *ed;
+    if (idx >= ARRAY_SIZE(dw3000cli_sysfs_inst)) {
         return;
     }
-    ed = &dw1000cli_sysfs_inst[idx];
+    ed = &dw3000cli_sysfs_inst[idx];
 
     if (ed->kobj) {
         mutex_destroy(&ed->local_lock);
