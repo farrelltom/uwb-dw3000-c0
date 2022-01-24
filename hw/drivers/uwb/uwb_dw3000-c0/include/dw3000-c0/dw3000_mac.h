@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _DW1000_MAC_H_
-#define _DW1000_MAC_H_
+#ifndef _DW3000_MAC_H_
+#define _DW3000_MAC_H_
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -40,7 +40,7 @@ extern "C" {
 #include <uwb/uwb_mac.h>
 #include <hal/hal_spi.h>
 #include <stats/stats.h>
-#include <dw1000/dw1000_dev.h>
+#include <dw3000-c0/dw3000_dev.h>
 
 #define DWT_DEVICE_ID   (0xDECA0130)        //!< DW1000 MP device ID
 

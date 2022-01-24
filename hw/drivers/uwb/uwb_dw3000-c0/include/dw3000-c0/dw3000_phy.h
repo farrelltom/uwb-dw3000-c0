@@ -27,8 +27,8 @@
  * parameters.
  */
 
-#ifndef _DW1000_PHY_H_
-#define _DW1000_PHY_H_
+#ifndef _DW3000_PHY_H_
+#define _DW3000_PHY_H_
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -38,10 +38,10 @@ extern "C" {
 #endif
 
 #include <hal/hal_spi.h>
-#include <dw1000/dw1000_dev.h>
-#include <dw1000/dw1000_mac.h>
-#include <dw1000/dw1000_gpio.h>
-#include <dw1000/dw1000_otp.h>
+#include <dw3000-c0/dw3000_dev.h>
+#include <dw3000-c0/dw3000_mac.h>
+#include <dw3000-c0/dw3000_gpio.h>
+#include <dw3000-c0/dw3000_otp.h>
 
 #define PEAK_MULTPLIER  (0x60) //!<  Peak Multiplier
 #define N_STD_FACTOR    (13)   //!< Number of standard deviation factor

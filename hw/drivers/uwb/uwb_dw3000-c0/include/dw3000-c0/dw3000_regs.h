@@ -26,8 +26,8 @@
  * @details This is the reg base class which includes all the dw1000 register's data.
  */
 
-#ifndef _DW1000_REGS_H_
-#define _DW1000_REGS_H_
+#ifndef _DW3000_REGS_H_
+#define _DW3000_REGS_H_
 
 #ifdef __cplusplus
 extern "C" {

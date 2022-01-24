@@ -26,8 +26,8 @@
  * @details
  */
 
-#ifndef _DW1000_STATS_H_
-#define _DW1000_STATS_H_
+#ifndef _DW3000_STATS_H_
+#define _DW3000_STATS_H_
 
 #include <stdlib.h>
 #include <stdint.h>

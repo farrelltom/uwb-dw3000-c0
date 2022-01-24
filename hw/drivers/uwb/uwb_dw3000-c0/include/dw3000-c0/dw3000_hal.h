@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _DW1000_HAL_H_
-#define _DW1000_HAL_H_
+#ifndef _DW3000_HAL_H_
+#define _DW3000_HAL_H_
 
 #include <stdint.h>
 
@@ -36,8 +36,8 @@
 extern "C" {
 #endif
 
-#include <dw1000/dw1000_dev.h>
-#include <dw1000/dw1000_phy.h>
+#include <dw3000-c0/dw3000_dev.h>
+#include <dw3000-c0/dw3000_phy.h>
 
 struct _dw1000_dev_instance_t * hal_dw1000_inst(uint8_t idx);     //!< Structure of hal instances.
 void hal_dw1000_reset(struct _dw1000_dev_instance_t * inst);

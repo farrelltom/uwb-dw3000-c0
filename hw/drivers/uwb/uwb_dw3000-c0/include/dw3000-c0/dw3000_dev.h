@@ -33,8 +33,8 @@
  */
 
 
-#ifndef _DW1000_DEV_H_
-#define _DW1000_DEV_H_
+#ifndef _DW3000_DEV_H_
+#define _DW3000_DEV_H_
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -46,8 +46,8 @@ extern "C" {
 #include <uwb/uwb.h>
 #include <os/os_dev.h>
 #include <hal/hal_spi.h>
-#include <dw1000/dw1000_regs.h>
-#include <dw1000/dw1000_stats.h>
+#include <dw3000-c0/dw3000_regs.h>
+#include <dw3000-c0/dw3000_stats.h>
 #include <dpl/dpl.h>
 
 #define DWT_DEVICE_ID   (0xDECA0130) //!< Decawave Device ID

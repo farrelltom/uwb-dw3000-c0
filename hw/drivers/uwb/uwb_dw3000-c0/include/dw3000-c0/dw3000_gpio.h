@@ -26,8 +26,8 @@
  * @details This is the gpio base class which utilises functions to enable/disable all the configurations related to GPIO.
  */
 
-#ifndef _DW1000_GPIO_H_
-#define _DW1000_GPIO_H_
+#ifndef _DW3000_GPIO_H_
+#define _DW3000_GPIO_H_
 
 #include <stdint.h>
 
@@ -36,8 +36,8 @@ extern "C" {
 #endif
 
 #include <hal/hal_spi.h>
-#include <dw1000/dw1000_regs.h>
-#include <dw1000/dw1000_dev.h>
+#include <dw3000-c0/dw3000_regs.h>
+#include <dw3000-c0/dw3000_dev.h>
 
 //! Defined constants for "mode" bit field parameter passed to dwt_set_leds() function.
 typedef enum _dw1000_led_modes_t{

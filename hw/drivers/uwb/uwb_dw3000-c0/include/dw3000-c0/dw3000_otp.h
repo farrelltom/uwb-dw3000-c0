@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef _DW1000_OTP_H_
-#define _DW1000_OTP_H_
+#ifndef _DW3000_OTP_H_
+#define _DW3000_OTP_H_
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -38,8 +38,8 @@ extern "C" {
 #endif
 
 #include <hal/hal_spi.h>
-#include <dw1000/dw1000_regs.h>
-#include <dw1000/dw1000_dev.h>
+#include <dw3000-c0/dw3000_regs.h>
+#include <dw3000-c0/dw3000_dev.h>
 
 //! OTP addresses definitions
 #define OTP_LDOTUNE_ADDRESS (0x04)        //!< OTP address definition for LDO voltage tuning
