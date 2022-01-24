@@ -17,7 +17,7 @@
 # under the License.
 #
 
-pkg.name: lib/cir/cir_dw1000
+pkg.name: lib/cir/cir_dw3000
 pkg.description: Channel Impulse Response
 pkg.author: "UWB Core <uwbcore@gmail.com>"
 pkg.homepage: "http://www.decawave.com/"
@@ -34,7 +34,7 @@ pkg.cflags:
     - "-fms-extensions"
 
 pkg.deps:
-    - "@decawave-uwb-dw1000/hw/drivers/uwb/uwb_dw1000"
+    - "@decawave-uwb-dw3000-c0/hw/drivers/uwb/uwb_dw3000-c0"
     - "@decawave-uwb-core/lib/cir"
     - "@decawave-uwb-core/lib/json"
 
