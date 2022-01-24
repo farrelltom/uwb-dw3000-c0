@@ -17,32 +17,29 @@
 # under the License.
 #
 
-repo.name: decawave-uwb-dw3000-c0
-repo.versions:
-    "0.0.0": "master"
-    "0.9.0": "uwb_dw1000_0_9_0_tag"
-    "0.9.1": "uwb_dw1000_0_9_1_tag"
+pkg.name: lib/cir/cir_dw3000-c0
+pkg.description: Channel Impulse Response
+pkg.author: "UWB Core <uwbcore@gmail.com>"
+pkg.homepage: "http://www.decawave.com/"
+pkg.keywords:
+    - dw3000
+    - uwb
+    - cir
 
-    "0-latest": "0.9.1"
-    "0-dev": "0.0.0"       # master
+pkg.apis:
+    - UWB_CIR_HW_IMPL
 
-repo.newt_compatibility:
-    # Allow all versions for 0.0.0.  This is a workaround to prevent a warning
-    # from being displayed when newt doesn't know which version of the repo is
-    # present.
-    0.0.0:
-        0.0.0: good
-#    0.9.0:
-#        1.7.0: good
-#    0.9.1:
-#        1.7.0: good
+pkg.cflags:
+    - "-std=gnu99"
+    - "-fms-extensions"
 
-repo.deps:
-    apache-mynewt-core:
-        type: github
-        user: apache
-        repo: mynewt-core
-        vers:
-            master: 1.7.0
-#            uwb_dw1000_0_9_0_tag: 1.7.0
-#            uwb_dw1000_0_9_1_tag: 1.7.0
+pkg.deps:
+    - "@decawave-uwb-dw3000-c0/hw/drivers/uwb/uwb_dw3000-c0"
+    - "@decawave-uwb-core/lib/cir"
+    - "@decawave-uwb-core/lib/json"
+
+pkg.init:
+    cir_dw1000_pkg_init: 405
+
+pkg.down:
+    cir_dw1000_pkg_down: 405
