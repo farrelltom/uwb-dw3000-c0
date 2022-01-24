@@ -47,7 +47,7 @@
 #include <dw3000-c0/dw3000_mac.h>
 
 
-#if MYNEWT_VAL(dw3000_MAC_STATS)
+#if MYNEWT_VAL(DW3000_MAC_STATS)
 STATS_NAME_START(mac_stat_section)
     STATS_NAME(mac_stat_section, tx_bytes)
     STATS_NAME(mac_stat_section, rx_bytes)
@@ -245,7 +245,7 @@ dw3000_mac_config(struct _dw3000_dev_instance_t * inst,
     bw = ((chan == 4) || (chan == 7)) ? 1 : 0 ; // Select wide or narrow band
     reg16 = lde_replicaCoeff[config->rx.preambleCodeIndex];
 
-#ifdef dw3000_API_ERROR_CHECK
+#ifdef DW3000_API_ERROR_CHECK
     assert(config->dataRate <= DWT_BR_6M8);
     assert(config->rx.pacLength <= DWT_PAC64);
     assert((chan >= 1) && (chan <= 7) && (chan != 6));
@@ -362,7 +362,7 @@ dw3000_mac_config(struct _dw3000_dev_instance_t * inst,
     inst->tx_fctrl = (((uint32_t)(config->tx.preambleLength | config->prf)) << TX_FCTRL_TXPRF_SHFT) |
         (((uint32_t)config->dataRate) << TX_FCTRL_TXBR_SHFT);
     dw3000_write_reg(inst, TX_FCTRL_ID, 0, inst->tx_fctrl, sizeof(uint32_t));
-    /* The SFD transmit pattern is initialised by the dw3000 upon a user TX request,
+    /* The SFD transmit pattern is initialised by the DW3000 upon a user TX request,
      * but (due to an IC issue) it is not done for an auto-ACK TX.
      * The SYS_CTRL write below works around this issue, by simultaneously initiating
      * and aborting a transmission, which correctly initialises the SFD
@@ -392,12 +392,12 @@ dw3000_mac_config(struct _dw3000_dev_instance_t * inst,
 struct uwb_dev_status
 dw3000_mac_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_config * config)
 {
-    /* Configure dw3000 */
+    /* Configure DW3000 */
     dw3000_mac_config(inst, config);
 
     dw3000_tasks_init(inst);
 
-#if MYNEWT_VAL(dw3000_MAC_STATS)
+#if MYNEWT_VAL(DW3000_MAC_STATS)
     {
         int rc = stats_init(
             STATS_HDR(inst->stat),
@@ -405,9 +405,9 @@ dw3000_mac_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_config * co
             STATS_NAME_INIT_PARMS(mac_stat_section));
         assert(rc == 0);
 
-#if  MYNEWT_VAL(dw3000_DEVICE_0) && !MYNEWT_VAL(dw3000_DEVICE_1)
+#if  MYNEWT_VAL(DW3000_DEVICE_0) && !MYNEWT_VAL(DW3000_DEVICE_1)
         rc = stats_register("mac", STATS_HDR(inst->stat));
-#elif  MYNEWT_VAL(dw3000_DEVICE_0) && MYNEWT_VAL(dw3000_DEVICE_1)
+#elif  MYNEWT_VAL(DW3000_DEVICE_0) && MYNEWT_VAL(DW3000_DEVICE_1)
         if (inst == hal_dw3000_inst(0))
             rc |= stats_register("mac0", STATS_HDR(inst->stat));
         else
@@ -421,7 +421,7 @@ dw3000_mac_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_config * co
 }
 
 /**
- * API to read the supplied RX data from the dw3000's
+ * API to read the supplied RX data from the DW3000's
  * TX buffer.The input parameters are the data length in bytes and a pointer
  * to those data bytes.
  *
@@ -431,14 +431,14 @@ dw3000_mac_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_config * co
  * if > 127 is programmed, DWT_PHRMODE_EXT needs to be set in the phrMode configuration.
  *
  * @param rxFrameBytes      Pointer to the user buffer containing the data to send.
- * @param rxBufferOffset    This specifies an offset in the dw3000s TX Buffer where writing of data starts.
+ * @param rxBufferOffset    This specifies an offset in the DW3000s TX Buffer where writing of data starts.
  * @return struct uwb_dev_status
  */
 struct uwb_dev_status
 dw3000_read_rx(struct _dw3000_dev_instance_t * inst,  uint8_t * rxFrameBytes, uint16_t rxBufferOffset, uint16_t rxFrameLength)
 {
     dpl_error_t err;
-#ifdef dw3000_API_ERROR_CHECK
+#ifdef DW3000_API_ERROR_CHECK
     assert((config->rx.phrMode && (txFrameLength <= 1023)) || (txFrameLength <= 127));
     assert((txBufferOffset + txFrameLength) <= 1024);
 #endif
@@ -459,7 +459,7 @@ mtx_error:
 }
 
 /**
- * API to write the supplied TX data into the dw3000's
+ * API to write the supplied TX data into the DW3000's
  * TX buffer.The input parameters are the data length in bytes and a pointer
  * to those data bytes.
  *
@@ -471,7 +471,7 @@ mtx_error:
  *                          auto-FCS Transmission).
  *
  * @param txFrameBytes      Pointer to the user buffer containing the data to send.
- * @param txBufferOffset    This specifies an offset in the dw3000s TX Buffer where writing of data starts.
+ * @param txBufferOffset    This specifies an offset in the DW3000s TX Buffer where writing of data starts.
  * @return struct uwb_dev_status
  */
 struct uwb_dev_status
@@ -479,7 +479,7 @@ dw3000_write_tx(struct _dw3000_dev_instance_t * inst,  uint8_t * txFrameBytes, u
 {
     int i;
     dpl_error_t err;
-#ifdef dw3000_API_ERROR_CHECK
+#ifdef DW3000_API_ERROR_CHECK
     assert((config->rx.phrMode && (txFrameLength <= 1023)) || (txFrameLength <= 127));
     assert((txBufferOffset + txFrameLength) <= 1024);
 #endif
@@ -530,7 +530,7 @@ void dw3000_write_tx_fctrl(struct _dw3000_dev_instance_t * inst, uint16_t txFram
     uint32_t tx_fctrl_reg;
     struct uwb_dev_config * config = &inst->uwb_dev.config;
 
-#ifdef dw3000_API_ERROR_CHECK
+#ifdef DW3000_API_ERROR_CHECK
     assert((inst->longFrames && ((txFrameLength + 2) <= 1023)) || ((txFrameLength +2) <= 127));
 #endif
     err = dpl_mutex_pend(&inst->mutex,  DPL_TIMEOUT_NEVER);
@@ -913,7 +913,7 @@ calc_rx_window_timeout(uint64_t rx_start, uint64_t rx_end)
     if (timeout > 0x7fffff) {
         timeout = 1;
     }
-    /* dw3000 can't have a rx-timeout greater than 0xffff */
+    /* DW3000 can't have a rx-timeout greater than 0xffff */
     if (timeout > 0xffff) {
         timeout = 0xffff;
     }
@@ -1335,7 +1335,7 @@ dw3000_calc_clock_offset_ratio_ttco(struct _dw3000_dev_instance_t * inst, int32_
  * API to read the RX signal quality diagnostic data.
  *
  * @param inst          Pointer to _dw3000_dev_instance_t.
- * @param diagnostics   Diagnostic structure pointer, this will contain the diagnostic data read from the dw3000.
+ * @param diagnostics   Diagnostic structure pointer, this will contain the diagnostic data read from the DW3000.
  * @return void
  */
 void
@@ -1351,9 +1351,9 @@ dw3000_read_rxdiag(struct _dw3000_dev_instance_t * inst, struct _dw3000_dev_rxdi
 
 
 /**
- * The dw3000 processing of interrupts in a task context instead of the interrupt context such that other interrupts
+ * The DW3000 processing of interrupts in a task context instead of the interrupt context such that other interrupts
  * and high priority tasks are not blocked waiting for the interrupt handler to complete processing.
- * This dw3000 softstack needs to coexists with other stacks and sensors interfaces. Use directive dw3000_DEV_TASK_PRIO to defined
+ * This dw3000 softstack needs to coexists with other stacks and sensors interfaces. Use directive DW3000_DEV_TASK_PRIO to defined
  * the priority of the dw3000_softstack at compile time.
  *
  * @param inst  Pointer to _dw3000_dev_instance_t.
@@ -1426,7 +1426,7 @@ dw3000_ic_and_host_ptrs_equal(dw3000_dev_instance_t * inst)
 
 
 /**
- * This is the dw3000's general Interrupt Service Routine. It will process/report the following events:
+ * This is the DW3000's general Interrupt Service Routine. It will process/report the following events:
  *          - RXFCG (through rx_complete_cb callback)
  *          - TXFRS (through tx_complete_cb callback)
  *          - RXRFTO/RXPTO (through rx_timeout_cb callback)
@@ -1452,7 +1452,7 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
     }
 
     /* Read status register */
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     {
         uint32_t irq_utime = dpl_cputime_get32();
 #endif
@@ -1462,11 +1462,11 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
             inst->sys_status_hi = dw3000_read_reg(inst, SYS_STATUS_ID, 4, sizeof(uint8_t));
         }
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
         if(!inst->sys_status_bt_lock) {
-            dw3000_SYS_STATUS_BT_ADD(inst, inst->sys_status, irq_utime);
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_HI)
-            dw3000_SYS_STATUS_BT_HI(inst, inst->sys_status_hi);
+            DW3000_SYS_STATUS_BT_ADD(inst, inst->sys_status, irq_utime);
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_HI)
+            DW3000_SYS_STATUS_BT_HI(inst, inst->sys_status_hi);
 #endif
         }
     }
@@ -1507,7 +1507,7 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
             goto early_exit;
         }
 
-        // The dw3000 has a bug that render the hardware auto_enable feature useless when used in conjunction with the double buffering.
+        // The DW3000 has a bug that render the hardware auto_enable feature useless when used in conjunction with the double buffering.
         // Consequently, we reenable the transeiver in the MAC-layer as early as possable. Note: The default behavior of MAC-Layer
         // is that the transceiver only returns to the IDLE state with a timeout event occured. The MAC-layer should otherwise reenable.
 
@@ -1536,9 +1536,9 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
         /* First two bytes are frame ctrl */
         inst->uwb_dev.fctrl = ((uint16_t)inst->uwb_dev.rxbuf[1]<<8) | inst->uwb_dev.rxbuf[0];
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
         if(!inst->sys_status_bt_lock) {
-            dw3000_SYS_STATUS_BT_FCTRL(inst, inst->uwb_dev.fctrl);
+            DW3000_SYS_STATUS_BT_FCTRL(inst, inst->uwb_dev.fctrl);
         }
 #endif
 
@@ -1556,7 +1556,7 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
             /* Because of a previous frame not being received properly, AAT bit can be set upon the proper reception of a frame not requesting for
              * acknowledgement (ACK frame is not actually sent though). If the AAT bit is set, check ACK request bit in frame control to confirm (this
              * implementation works only for IEEE802.15.4-2011 compliant frames).
-             * This issue is not documented at the time of writing this code. It should be in next release of dw3000 User Manual (v2.09, from July 2016). */
+             * This issue is not documented at the time of writing this code. It should be in next release of DW3000 User Manual (v2.09, from July 2016). */
             if ((inst->uwb_dev.fctrl & UWB_FCTRL_ACK_REQUESTED) == 0){
                 /* Clear AAT status bit in callback data register copy and status */
                 dw3000_write_reg(inst, SYS_STATUS_ID, 0, SYS_STATUS_AAT, sizeof(uint8_t));
@@ -1671,10 +1671,10 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
             assert(err == DPL_OK);
         }
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
         if(!inst->sys_status_bt_lock && !inst->uwb_dev.status.autoack_triggered) {
             /* Assuming the start_tx writes the fctrl at send time */
-            dw3000_SYS_STATUS_BT_FCTRL(inst, inst->uwb_dev.fctrl);
+            DW3000_SYS_STATUS_BT_FCTRL(inst, inst->uwb_dev.fctrl);
         }
 #endif
 
@@ -1722,7 +1722,7 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
         if (!inst->control.abs_timeout) {
             // Because of an issue with receiver restart after error conditions, an RX reset must be applied
             // after any error or timeout event to ensure the next good frame's timestamp is computed correctly.
-            // See section "RX Message timestamp" in dw3000 User Manual.
+            // See section "RX Message timestamp" in DW3000 User Manual.
             dw3000_write_reg(inst, SYS_CTRL_ID, SYS_CTRL_OFFSET, (uint16_t)SYS_CTRL_TRXOFF, sizeof(uint16_t)) ; // Disable the radio
             dw3000_phy_rx_reset(inst);
 
@@ -1746,7 +1746,7 @@ dw3000_interrupt_ev_cb(struct dpl_event *ev)
 
         // Because of an issue with receiver restart after error conditions, an RX reset must be applied after any error or timeout event to ensure
         // the next good frame's timestamp is computed correctly.
-        // See section "RX Message timestamp" in dw3000 User Manual.
+        // See section "RX Message timestamp" in DW3000 User Manual.
 
         dw3000_write_reg(inst, SYS_STATUS_ID, 0, (SYS_STATUS_ALL_RX_ERR), sizeof(uint32_t)); // Clear RX error event bits
 
@@ -1814,16 +1814,16 @@ sem_error_exit:
      * from the previous irq until a new one arrived -> queue another irq event for the task */
     if (hal_gpio_read(inst->irq_pin) && !dpl_event_is_queued(ev)) {
         dpl_eventq_put(&inst->uwb_dev.eventq, &inst->uwb_dev.interrupt_ev);
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
         if(!inst->sys_status_bt_lock) {
-            dw3000_SYS_STATUS_BT_PTR(inst).interrupt_reentry = 1;
+            DW3000_SYS_STATUS_BT_PTR(inst).interrupt_reentry = 1;
         }
 #endif
     }
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     if(!inst->sys_status_bt_lock) {
-        dw3000_SYS_STATUS_BT_PTR(inst).utime_end = dpl_cputime_get32();
+        DW3000_SYS_STATUS_BT_PTR(inst).utime_end = dpl_cputime_get32();
     }
 #endif
 }
@@ -1931,7 +1931,7 @@ dw3000_get_rssi(struct _dw3000_dev_instance_t * inst)
 
 /**
  * API to give a rough estimate of how likely the received packet is
- * line of sight (LOS). Taken from 4.7 of dw3000 manual.
+ * line of sight (LOS). Taken from 4.7 of DW3000 manual.
  *
  * @param rssi rssi as calculated by dw3000_calc_rssi
  * @param fppl fppl as calculated by dw3000_calc_fppl
@@ -2070,7 +2070,7 @@ inline uint32_t dw3000_read_txtime_lo(struct _dw3000_dev_instance_t * inst){
 /**
  * @fn dwt_configcwmode()
  *
- * @brief this function sets the dw3000 to transmit cw signal at specific channel
+ * @brief this function sets the DW3000 to transmit cw signal at specific channel
  * frequency.
  *
  * input parameters:

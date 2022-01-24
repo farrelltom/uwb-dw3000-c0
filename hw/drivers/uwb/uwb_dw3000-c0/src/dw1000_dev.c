@@ -44,7 +44,7 @@
 #define DIAGMSG(s,u)
 #endif
 
-//! Structure of dw3000 attributes.
+//! Structure of DW3000 attributes.
 typedef struct _dw3000_cmd{
     uint32_t reg:6;          //!< Indicates the register to be read or write into
     uint32_t subindex:1;     //!< Indicates offset address of the register
@@ -89,7 +89,7 @@ dw3000_read(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uin
     /* Possible issue here when reading shorter amounts of data
      * using the nonblocking read with double buffer. Asserts on
      * mutex releases seen in calling function when reading frames of length 8 */
-    if (length < MYNEWT_VAL(dw3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
+    if (length < MYNEWT_VAL(DW3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
         inst->uwb_dev.config.blocking_spi_transfers) {
         hal_dw3000_read(inst, header, len, buffer, length);
     } else {
@@ -133,7 +133,7 @@ dw3000_write(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, ui
     assert((subaddress <= 0x7FFF) && ((subaddress + length) <= 0x7FFF)); // Index and sub-addressable area are limited to 15-bits.
 
     /* Only use non-blocking write if the length of the write justifies it */
-    if (len+length < MYNEWT_VAL(dw3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
+    if (len+length < MYNEWT_VAL(DW3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
         inst->uwb_dev.config.blocking_spi_transfers) {
         hal_dw3000_write(inst, header, len, buffer, length);
     } else {
@@ -180,7 +180,7 @@ dw3000_read_reg(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress,
     assert((subaddress <= 0x7FFF) && ((subaddress + nbytes) <= 0x7FFF)); // Index and sub-addressable area are limited to 15-bits.
     assert(nbytes <= sizeof(uint64_t));
 
-    if (len+nbytes < MYNEWT_VAL(dw3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
+    if (len+nbytes < MYNEWT_VAL(DW3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
         inst->uwb_dev.config.blocking_spi_transfers) {
         hal_dw3000_read(inst, header, len, buffer.array, nbytes);
     } else {
@@ -229,7 +229,7 @@ dw3000_write_reg(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress
     assert(reg <= 0x3F); // Record number is limited to 6-bits.
     assert((subaddress <= 0x7FFF) && ((subaddress + nbytes) <= 0x7FFF)); // Index and sub-addressable area are limited to 15-bits.
 
-    if (len+nbytes < MYNEWT_VAL(dw3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
+    if (len+nbytes < MYNEWT_VAL(DW3000_DEVICE_SPI_RD_MAX_NOBLOCK) ||
         inst->uwb_dev.config.blocking_spi_transfers) {
         hal_dw3000_write(inst, header, len, buffer.array, nbytes);
     } else {
@@ -257,7 +257,7 @@ dw3000_softreset(dw3000_dev_instance_t * inst)
     dw3000_write_reg(inst, AON_ID, AON_CTRL_OFFSET, AON_CTRL_SAVE, sizeof(uint8_t));
     dw3000_write_reg(inst, PMSC_ID, PMSC_CTRL0_SOFTRESET_OFFSET, PMSC_CTRL0_RESET_ALL, sizeof(uint8_t));// Reset HIF, TX, RX and PMSC
 
-    // dw3000 needs a 10us sleep to let clk PLL lock after reset - the PLL will automatically lock after the reset
+    // DW3000 needs a 10us sleep to let clk PLL lock after reset - the PLL will automatically lock after the reset
     dpl_cputime_delay_usecs(10);
 
     dw3000_write_reg(inst, PMSC_ID, PMSC_CTRL0_SOFTRESET_OFFSET, PMSC_CTRL0_RESET_CLEAR, sizeof(uint8_t)); // Clear reset
@@ -972,7 +972,7 @@ dw3000_dev_init(struct os_dev *odev, void *arg)
     }
 
     udev->rxbuf_size = MYNEWT_VAL(UWB_RX_BUFFER_SIZE);
-    udev->txbuf_size = MYNEWT_VAL(dw3000_HAL_SPI_BUFFER_SIZE);
+    udev->txbuf_size = MYNEWT_VAL(DW3000_HAL_SPI_BUFFER_SIZE);
     uwb_dev_init(udev);
 
     /* Setup common uwb interface */
@@ -982,7 +982,7 @@ dw3000_dev_init(struct os_dev *odev, void *arg)
 #if MYNEWT_VAL(CIR_ENABLED)
     udev->cir = (struct cir_instance*)inst->cir;
 #endif
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     inst->sys_status_bt_idx = 0;
     inst->sys_status_bt_lock = 0;
 #endif
@@ -1017,7 +1017,7 @@ dw3000_dev_init(struct os_dev *odev, void *arg)
 
     SLIST_INIT(&inst->uwb_dev.interface_cbs);
 
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN) || MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN) || MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     inst->bt_ticks2usec = 1000000/MYNEWT_VAL(OS_CPUTIME_FREQ);
 #endif
     return DPL_OK;

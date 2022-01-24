@@ -60,13 +60,13 @@ void dw3000_pkg_init(void)
     DIAGMSG("{\"utime\": %lu,\"msg\": \"dw3000_pkg_init\"}\n", dpl_cputime_ticks_to_usecs(dpl_cputime_get32()));
 #endif
 
-#if MYNEWT_VAL(dw3000_DEVICE_0)
+#if MYNEWT_VAL(DW3000_DEVICE_0)
     dw3000_dev_config(hal_dw3000_inst(0));
 #endif
-#if MYNEWT_VAL(dw3000_DEVICE_1)
+#if MYNEWT_VAL(DW3000_DEVICE_1)
     dw3000_dev_config(hal_dw3000_inst(1));
 #endif
-#if MYNEWT_VAL(dw3000_DEVICE_2)
+#if MYNEWT_VAL(DW3000_DEVICE_2)
     dw3000_dev_config(hal_dw3000_inst(2));
 #endif
 
@@ -87,7 +87,7 @@ void dw3000_pkg_init(void)
     }
 #endif
 
-#if MYNEWT_VAL(dw3000_CLI)
+#if MYNEWT_VAL(DW3000_CLI)
     dw3000_cli_register();
 #endif
 }
@@ -111,7 +111,7 @@ int dw3000_pkg_down(int reason)
     if (dev) {
         dw3000_dev_deinit((struct _dw3000_dev_instance_t *)dev);
     }
-#if MYNEWT_VAL(dw3000_CLI)
+#if MYNEWT_VAL(DW3000_CLI)
     dw3000_cli_down(reason);
 #endif
     return 0;

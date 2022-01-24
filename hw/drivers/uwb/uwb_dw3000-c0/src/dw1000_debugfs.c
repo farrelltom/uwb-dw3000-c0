@@ -95,12 +95,12 @@ static int cmd_dump(struct seq_file *s, void *data)
         if (da_addr > 0x3F) da_addr = 0x3F;
         dw3000_cli_dump_address(inst, da_addr, da_length, &streamer_debugfs);
     }
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     if (!strcmp(cmd->fn, "ibt")) {
         dw3000_cli_interrupt_backtrace(inst, 1, &streamer_debugfs);
     }
 #endif
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
     if (!strcmp(cmd->fn, "bt")) {
         dw3000_cli_backtrace(inst, 1, &streamer_debugfs);
     }

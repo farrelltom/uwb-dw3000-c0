@@ -159,7 +159,7 @@ static ssize_t cmd_store(struct kobject *kobj,
 
     }
 
-#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(DW3000_CLI_EVENT_COUNTERS)
     if (!strcmp(attr->attr.name, "ev")) {
         ret = kstrtoll(buf, 0, &res);
         if (!ret) {
@@ -213,7 +213,7 @@ static const char* rw_attr[] = {
     "uid",
     "euid",
     "cw",
-#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(DW3000_CLI_EVENT_COUNTERS)
     "ev",
 #endif
     "gpio0_mode", "gpio1_mode", "gpio2_mode",

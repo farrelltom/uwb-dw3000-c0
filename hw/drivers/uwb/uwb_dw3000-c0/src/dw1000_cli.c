@@ -37,7 +37,7 @@
 #include <dw3000-c0/dw3000_regs.h>
 #include "dw3000_cli_priv.h"
 
-#if MYNEWT_VAL(dw3000_CLI)
+#if MYNEWT_VAL(DW3000_CLI)
 
 #include <shell/shell.h>
 #include <console/console.h>
@@ -64,22 +64,22 @@ static int dw3000_cli_cmd(const struct shell_cmd *cmd, int argc, char **argv, st
 #if MYNEWT_VAL(SHELL_CMD_HELP)
 const struct shell_param cmd_dw3000_param[] = {
     {"dump", "[inst] dump all registers"},
-#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(DW3000_CLI_EVENT_COUNTERS)
     {"ev", "<inst> <on|reset|dump> event counters"},
 #endif
     {"cw", "<inst> tx CW on current channel"},
     {"da", "<inst> <addr> [length], dump area"},
     {"rd", "<inst> <addr> <subaddr> <length>, read register"},
     {"wr", "<inst> <addr> <subaddr> <value> <length>, write value to register"},
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     {"ibt", "[instance [verbose-num]] interrupt backtrace"},
     {"status2txt", "<sys_status> to text"},
     {"fctrl2txt", "<fctrl> to text"},
 #endif
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
     {"spibt", "[instance [verbose-num]] spi backtrace"},
 #endif
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
     {"bt", "[instance [verbose-num]] spi+irq backtrace"},
 #endif
     {NULL,NULL},
@@ -176,7 +176,7 @@ dw3000_cli_dump_address(struct _dw3000_dev_instance_t * inst, uint32_t addr, uin
     }
 }
 
-#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(DW3000_CLI_EVENT_COUNTERS)
 void
 dw3000_cli_dump_event_counters(struct _dw3000_dev_instance_t * inst, struct streamer *streamer)
 {
@@ -200,7 +200,7 @@ dw3000_cli_dump_event_counters(struct _dw3000_dev_instance_t * inst, struct stre
 }
 #endif
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
 static char*
 sys_status_to_string(uint64_t s)
 {
@@ -321,8 +321,8 @@ print_interrupt_bt_line(uint32_t *start_t, uint16_t verbose,
             streamer_printf(streamer, " %32s ", "");
         }
     }
-    streamer_printf(streamer, " %0*llX ", 2*dw3000_SYS_STATUS_ASSEMBLE_LEN, dw3000_SYS_STATUS_ASSEMBLE(p));
-    streamer_printf(streamer, " %s", sys_status_to_string(dw3000_SYS_STATUS_ASSEMBLE(p)));
+    streamer_printf(streamer, " %0*llX ", 2*DW3000_SYS_STATUS_ASSEMBLE_LEN, DW3000_SYS_STATUS_ASSEMBLE(p));
+    streamer_printf(streamer, " %s", sys_status_to_string(DW3000_SYS_STATUS_ASSEMBLE(p)));
     return 1;
 }
 
@@ -342,7 +342,7 @@ dw3000_cli_interrupt_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t ve
     if (verbose&0x1) {
         streamer_printf(streamer, "(fctrl2txt)%21s ", "");
     }
-    streamer_printf(streamer, " %*s ", 2*dw3000_SYS_STATUS_ASSEMBLE_LEN, "status");
+    streamer_printf(streamer, " %*s ", 2*DW3000_SYS_STATUS_ASSEMBLE_LEN, "status");
     streamer_printf(streamer, "   status2txt\n");
     for (i=0;i<80;i++) streamer_printf(streamer, "-");
     if (verbose&0x1) {
@@ -352,8 +352,8 @@ dw3000_cli_interrupt_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t ve
 
 
     inst->sys_status_bt_lock = 1;
-    for (i=0;i<MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN);i++) {
-        uint16_t i_mod = (inst->sys_status_bt_idx + i + 1) % MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN);
+    for (i=0;i<MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN);i++) {
+        uint16_t i_mod = (inst->sys_status_bt_idx + i + 1) % MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN);
         p = &inst->sys_status_bt[i_mod];
         if (print_interrupt_bt_line(&start_t, verbose, p, p_last, streamer)) {
             streamer_printf(streamer, "\n");
@@ -369,7 +369,7 @@ dw3000_cli_interrupt_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t ve
 }
 #endif
 
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
 static char*
 cmd_to_string(uint8_t *cmd, uint8_t cmd_len)
 {
@@ -456,8 +456,8 @@ dw3000_cli_spi_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t verbose,
     streamer_printf(streamer, "\n");
 
     inst->spi_bt_lock = 1;
-    for (i=0;i<MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN);i++) {
-        uint16_t i_mod = (inst->spi_bt_idx + i + 1) % MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN);
+    for (i=0;i<MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN);i++) {
+        uint16_t i_mod = (inst->spi_bt_idx + i + 1) % MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN);
         p = &inst->spi_bt[i_mod];
         if (print_spi_bt_line(&start_t, verbose, p, p_last, streamer)) {
             streamer_printf(streamer, "\n");
@@ -468,7 +468,7 @@ dw3000_cli_spi_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t verbose,
 }
 #endif
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
 
 void
 dw3000_cli_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t verbose, struct streamer *streamer)
@@ -494,13 +494,13 @@ dw3000_cli_backtrace(struct _dw3000_dev_instance_t * inst, uint16_t verbose, str
 
     inst->spi_bt_lock = 1;
     inst->sys_status_bt_lock = 1;
-    while (spi_i<MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN) || irq_i<MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)) {
-        uint16_t spi_i_mod = (inst->spi_bt_idx + spi_i + 1) % MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN);
-        uint16_t irq_i_mod = (inst->sys_status_bt_idx + irq_i + 1) % MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN);
+    while (spi_i<MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN) || irq_i<MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)) {
+        uint16_t spi_i_mod = (inst->spi_bt_idx + spi_i + 1) % MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN);
+        uint16_t irq_i_mod = (inst->sys_status_bt_idx + irq_i + 1) % MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN);
         spi_p = &inst->spi_bt[spi_i_mod];
         irq_p = &inst->sys_status_bt[irq_i_mod];
-        if ((spi_p->utime < irq_p->utime && spi_i < MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)) ||
-            irq_i >= MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)) {
+        if ((spi_p->utime < irq_p->utime && spi_i < MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)) ||
+            irq_i >= MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)) {
             if (print_spi_bt_line(&start_t, verbose, spi_p, spi_p_last, streamer)) {
                 streamer_printf(streamer, "\n");
             }
@@ -553,7 +553,7 @@ dw3000_cli_cmd(const struct shell_cmd *cmd, int argc, char **argv, struct stream
         console_no_ticks();
         dw3000_cli_dump_registers(inst, streamer);
         console_yes_ticks();
-#if MYNEWT_VAL(dw3000_CLI_EVENT_COUNTERS)
+#if MYNEWT_VAL(DW3000_CLI_EVENT_COUNTERS)
     } else if (!strcmp(argv[1], "ev")) {
         if (argc<4) {
             dw3000_cli_too_few_args(streamer);
@@ -617,7 +617,7 @@ dw3000_cli_cmd(const struct shell_cmd *cmd, int argc, char **argv, struct stream
         int length = strtol(argv[5], NULL, 0);
         uint64_t reg = dw3000_read_reg(hal_dw3000_inst(inst_n), addr, sub, length);
         streamer_printf(streamer, "0x%06"PRIX32",0x%04X: 0x%"PRIX64"\n", addr, sub, reg);
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     } else if (!strcmp(argv[1], "ibt")){
         uint8_t d=0;
         if (argc < 3) {
@@ -650,7 +650,7 @@ dw3000_cli_cmd(const struct shell_cmd *cmd, int argc, char **argv, struct stream
         streamer_printf(streamer, "----\n ledgend: \n");
         fctrl_ledgend(streamer);
 #endif
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
     } else if (!strcmp(argv[1], "spibt")){
         uint8_t d=0;
         if (argc < 3) {
@@ -668,7 +668,7 @@ dw3000_cli_cmd(const struct shell_cmd *cmd, int argc, char **argv, struct stream
         dw3000_cli_spi_backtrace(inst, d, streamer);
         console_yes_ticks();
 #endif
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN) && MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
     } else if (!strcmp(argv[1], "bt")){
         uint8_t d=0;
         if (argc < 3) {
@@ -700,7 +700,7 @@ dw3000_cli_cmd(const struct shell_cmd *cmd, int argc, char **argv, struct stream
 int
 dw3000_cli_register(void)
 {
-#if MYNEWT_VAL(dw3000_CLI)
+#if MYNEWT_VAL(DW3000_CLI)
     int rc;
     rc = shell_cmd_register(&shell_dw3000_cmd);
 #ifdef __KERNEL__

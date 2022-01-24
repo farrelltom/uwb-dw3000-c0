@@ -187,11 +187,11 @@ dw3000_phy_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_txrf_config
 
     dw3000_softreset(inst);
     dw3000_phy_sysclk_XTAL(inst);
-#if MYNEWT_VAL(dw3000_RXTX_LEDS)
+#if MYNEWT_VAL(DW3000_RXTX_LEDS)
     dw3000_gpio_config_leds(inst, DWT_LEDS_ENABLE | DWT_LEDS_INIT_BLINK);
 #endif
 
-#if MYNEWT_VAL(dw3000_RXTX_GPIO)
+#if MYNEWT_VAL(DW3000_RXTX_GPIO)
     dw3000_gpio5_config_ext_txe(inst);
     dw3000_gpio6_config_ext_rxe(inst);
 #endif
@@ -218,7 +218,7 @@ dw3000_phy_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_txrf_config
     inst->otp_vbat = _dw3000_otp_read(inst, OTP_VBAT_ADDRESS);
     inst->otp_temp = _dw3000_otp_read(inst, OTP_VTEMP_ADDRESS);
 
-    // XTAL trim value is set in OTP for dw3000 module and EVK/TREK boards but that might not be the case in a custom design
+    // XTAL trim value is set in OTP for DW3000 module and EVK/TREK boards but that might not be the case in a custom design
     inst->otp_xtal_trim = otp_addr & 0x1F;
     /* A value of 0 in OTP means that the crystal has not been trimmed
      * Only use the OTP value if we don't have an overriding value in config
@@ -236,7 +236,7 @@ dw3000_phy_init(struct _dw3000_dev_instance_t * inst, struct uwb_dev_txrf_config
 
     dw3000_phy_sysclk_SEQ(inst);    // Enable clocks for sequencing
 
-    // The 3 bits in AON CFG1 register must be cleared to ensure proper operation of the dw3000 in DEEPSLEEP mode.
+    // The 3 bits in AON CFG1 register must be cleared to ensure proper operation of the DW3000 in DEEPSLEEP mode.
     reg = dw3000_read_reg(inst, AON_ID, AON_CFG1_OFFSET, sizeof(uint8_t));
     reg |= ~AON_CFG1_SMXX;
     dw3000_write_reg(inst, AON_ID, AON_CFG1_OFFSET, reg, sizeof(uint8_t));
@@ -313,7 +313,7 @@ void dw3000_phy_config_txrf(struct _dw3000_dev_instance_t * inst, struct uwb_dev
 
 #ifndef __KERNEL__
 /**
- * API to read the temperature of the dw3000 that was sampled
+ * API to read the temperature of the DW3000 that was sampled
  * on waking from Sleep/Deepsleep. They are not current values, but read on last
  * wakeup if DWT_TANDV bit is set in mode parameter of dwt_configuresleep.
  *
@@ -326,7 +326,7 @@ float dw3000_phy_read_wakeuptemp_SI(struct _dw3000_dev_instance_t * inst)
 }
 
 /**
- * API to read the battery voltage of the dw3000 that was sampled
+ * API to read the battery voltage of the DW3000 that was sampled
  * on waking from Sleep/Deepsleep. They are not current values, but read on last
  * wakeup if DWT_TANDV bit is set in mode parameter of dwt_configure_sleep.
  *
@@ -340,7 +340,7 @@ float dw3000_phy_read_read_wakeupvbat_SI(struct _dw3000_dev_instance_t * inst)
 #endif
 
 /**
- * API to reset the receiver of the dw3000.
+ * API to reset the receiver of the DW3000.
  *
  * @param inst   Pointer to dw3000_dev_instance_t.
  * @return void
@@ -463,12 +463,12 @@ mtx_error:
 }
 
 /**
- * API to synchronise dw3000 with external clocks or events or with other dw3000’s.
+ * API to synchronise DW3000 with external clocks or events or with other DW3000’s.
  * For example, this would be required in a TDOA RTLS system employing wired clock synchronisation of the
  * anchor nodes or AoA node for phase measurement.
  *
  * @param inst      Pointer to dw3000_dev_instance_t.
- * @param delay     To configure dw3000 for OSTR mode, the delay value is set to the desired delay value.
+ * @param delay     To configure DW3000 for OSTR mode, the delay value is set to the desired delay value.
  * @param enable    True/false.
  * @return void
  */
@@ -633,13 +633,13 @@ dw3000_phy_txrf_power_value(struct _dw3000_dev_instance_t * inst, uint8_t *reg,
     }
 
     switch (c) {
-    case(18): *reg = dw3000_power_valuef(dw3000_txrf_config_18db, fine);break;
-    case(15): *reg = dw3000_power_valuef(dw3000_txrf_config_15db, fine);break;
-    case(12): *reg = dw3000_power_valuef(dw3000_txrf_config_12db, fine);break;
-    case(9):  *reg = dw3000_power_valuef(dw3000_txrf_config_9db, fine);break;
-    case(6):  *reg = dw3000_power_valuef(dw3000_txrf_config_6db, fine);break;
-    case(3):  *reg = dw3000_power_valuef(dw3000_txrf_config_3db, fine);break;
-    case(0):  *reg = dw3000_power_valuef(dw3000_txrf_config_0db, fine);break;
+    case(18): *reg = dw3000_power_valuef(DW3000_txrf_config_18db, fine);break;
+    case(15): *reg = dw3000_power_valuef(DW3000_txrf_config_15db, fine);break;
+    case(12): *reg = dw3000_power_valuef(DW3000_txrf_config_12db, fine);break;
+    case(9):  *reg = dw3000_power_valuef(DW3000_txrf_config_9db, fine);break;
+    case(6):  *reg = dw3000_power_valuef(DW3000_txrf_config_6db, fine);break;
+    case(3):  *reg = dw3000_power_valuef(DW3000_txrf_config_3db, fine);break;
+    case(0):  *reg = dw3000_power_valuef(DW3000_txrf_config_0db, fine);break;
     default:
         return false;
     }

@@ -40,17 +40,17 @@
 
 #include <mcu/mcu.h>
 
-#if MYNEWT_VAL(dw3000_DEVICE_0)
+#if MYNEWT_VAL(DW3000_DEVICE_0)
 
 static dw3000_dev_instance_t hal_dw3000_instances[]= {
-    #if  MYNEWT_VAL(dw3000_DEVICE_0)
+    #if  MYNEWT_VAL(DW3000_DEVICE_0)
     [0] = {
             .uwb_dev = {
                 .idx = 0,
                 .task_prio = 0x10,
                 .status = {0},
-                .rx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_0_RX_ANT_DLY),
-                .tx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_0_TX_ANT_DLY),
+                .rx_antenna_delay = MYNEWT_VAL(DW3000_DEVICE_0_RX_ANT_DLY),
+                .tx_antenna_delay = MYNEWT_VAL(DW3000_DEVICE_0_TX_ANT_DLY),
                 .attrib = {                //!< These values are now set in dw3000_dev_init
                     .nsfd = 8,             //!< Number of symbols in start of frame delimiter
                     .nsync = 128,          //!< Number of symbols in preamble sequence
@@ -77,15 +77,15 @@ static dw3000_dev_instance_t hal_dw3000_instances[]= {
                     .txrf={
                         .PGdly = TC_PGDELAY_CH5,
                         //.power = 0x2A4A6A8A,
-                        .BOOSTNORM = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP500 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP250 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP125 = dw3000_power_value(dw3000_txrf_config_9db, 2.5)
+                        .BOOSTNORM = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP500 = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP250 = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP125 = dw3000_power_value(DW3000_txrf_config_9db, 2.5)
                     },
                     .trxoff_enable = 1,
                     .rxdiag_enable = 0,
                     .dblbuffon_enabled = 0,
-#if MYNEWT_VAL(dw3000_BIAS_CORRECTION_ENABLED)
+#if MYNEWT_VAL(DW3000_BIAS_CORRECTION_ENABLED)
                     .bias_correction_enable = 1,
 #endif
                     .LDE_enable = 1,
@@ -109,14 +109,14 @@ static dw3000_dev_instance_t hal_dw3000_instances[]= {
             },
             .spi_sem = 0,
     },
-    #if  MYNEWT_VAL(dw3000_DEVICE_1)
+    #if  MYNEWT_VAL(DW3000_DEVICE_1)
     [1] = {
             .uwb_dev = {
                 .idx = 1,
                 .task_prio = 0x11,
                 .status = {0},
-                .rx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_1_RX_ANT_DLY),
-                .tx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_1_TX_ANT_DLY),
+                .rx_antenna_delay = MYNEWT_VAL(DW3000_DEVICE_1_RX_ANT_DLY),
+                .tx_antenna_delay = MYNEWT_VAL(DW3000_DEVICE_1_TX_ANT_DLY),
                 .attrib = {                //!< These values are now set in dw3000_dev_init
                     .nsfd = 8,             //!< Number of symbols in start of frame delimiter
                     .nsync = 128,          //!< Number of symbols in preamble sequence
@@ -142,15 +142,15 @@ static dw3000_dev_instance_t hal_dw3000_instances[]= {
                     },
                     .txrf={
                         .PGdly = TC_PGDELAY_CH5,
-                        .BOOSTNORM = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP500 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP250 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP125 = dw3000_power_value(dw3000_txrf_config_9db, 2.5)
+                        .BOOSTNORM = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP500 = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP250 = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP125 = dw3000_power_value(DW3000_txrf_config_9db, 2.5)
                     },
                     .trxoff_enable = 1,
                     .rxdiag_enable = 1,
                     .dblbuffon_enabled = 0,
-#if MYNEWT_VAL(dw3000_BIAS_CORRECTION_ENABLED)
+#if MYNEWT_VAL(DW3000_BIAS_CORRECTION_ENABLED)
                     .bias_correction_enable = 1,
 #endif
                     .LDE_enable = 1,
@@ -174,13 +174,13 @@ static dw3000_dev_instance_t hal_dw3000_instances[]= {
             },
             .spi_sem = 0,
     },
-    #if  MYNEWT_VAL(dw3000_DEVICE_2)
+    #if  MYNEWT_VAL(DW3000_DEVICE_2)
     [2] = {
                 .idx = 2,
                 .task_prio = 0x12,
                 .status = {0},
-                .rx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_2_RX_ANT_DLY),
-                .tx_antenna_delay = MYNEWT_VAL(dw3000_DEVICE_2_TX_ANT_DLY),
+                .rx_antenna_delay = MYNEWT_VAL(DW3000_DEVICE_2_RX_ANT_DLY),
+                .tx_antenna_delay = MYNEWT_VAL(DW3000_DEVICE_2_TX_ANT_DLY),
                 .attrib = {                //!< These values are now set in dw3000_dev_init
                     .nsfd = 8,             //!< Number of symbols in start of frame delimiter
                     .nsync = 128,          //!< Number of symbols in preamble sequence
@@ -206,15 +206,15 @@ static dw3000_dev_instance_t hal_dw3000_instances[]= {
                     },
                     .txrf={
                         .PGdly = TC_PGDELAY_CH5,
-                        .BOOSTNORM = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP500 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP250 = dw3000_power_value(dw3000_txrf_config_9db, 2.5),
-                        .BOOSTP125 = dw3000_power_value(dw3000_txrf_config_9db, 2.5)
+                        .BOOSTNORM = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP500 = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP250 = dw3000_power_value(DW3000_txrf_config_9db, 2.5),
+                        .BOOSTP125 = dw3000_power_value(DW3000_txrf_config_9db, 2.5)
                     },
                     .trxoff_enable = 1,
                     .rxdiag_enable = 1,
                     .dblbuffon_enabled = 0,
-#if MYNEWT_VAL(dw3000_BIAS_CORRECTION_ENABLED)
+#if MYNEWT_VAL(DW3000_BIAS_CORRECTION_ENABLED)
                     .bias_correction_enable = 1,
 #endif
                     .LDE_enable = 1,
@@ -244,10 +244,10 @@ static dw3000_dev_instance_t hal_dw3000_instances[]= {
 };
 #endif
 
-#if MYNEWT_VAL(dw3000_DEVICE_0) || MYNEWT_VAL(dw3000_DEVICE_1) || MYNEWT_VAL(dw3000_DEVICE_2)
+#if MYNEWT_VAL(DW3000_DEVICE_0) || MYNEWT_VAL(DW3000_DEVICE_1) || MYNEWT_VAL(DW3000_DEVICE_2)
 
 /**
- * API to choose dw3000 instances based on parameters.
+ * API to choose DW3000 instances based on parameters.
  *
  * @param idx  Indicates number of instances for the chosen bsp.
  * @return dw3000_dev_instance_t
@@ -306,14 +306,14 @@ hal_dw3000_read(struct _dw3000_dev_instance_t * inst,
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 0);
+    DW3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 0);
 
     hal_gpio_write(inst->ss_pin, 0);
 
 #if !defined(MYNEWT)
     /* Linux mode really, for when we can't split the command and data */
     assert(cmd_size + length < inst->uwb_dev.txbuf_size);
-    assert(cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT));
+    assert(cmd_size + length < MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT));
 
     memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
     memset(inst->uwb_dev.txbuf + cmd_size, 0, length);
@@ -324,8 +324,8 @@ hal_dw3000_read(struct _dw3000_dev_instance_t * inst,
 #else
     rc = hal_spi_txrx(inst->spi_num, (void*)cmd, 0, cmd_size);
     assert(rc == DPL_OK);
-    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) ?
-        MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
+    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT)) ?
+        MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
     int bytes_left = length;
     for (int offset = 0;offset<length && rc == DPL_OK;offset+=step) {
         int bytes_to_read = (bytes_left > step) ? step : bytes_left;
@@ -335,7 +335,7 @@ hal_dw3000_read(struct _dw3000_dev_instance_t * inst,
 #endif
     hal_gpio_write(inst->ss_pin, 1);
 
-    dw3000_SPI_BT_ADD_END(inst);
+    DW3000_SPI_BT_ADD_END(inst);
     rc = dpl_sem_release(inst->spi_sem);
     assert(rc == DPL_OK);
 early_exit:
@@ -362,7 +362,7 @@ hal_dw3000_spi_txrx_cb(void *arg, int len)
         assert(err == DPL_OK);
     } else {
         hal_gpio_write(inst->ss_pin, 1);
-        dw3000_SPI_BT_ADD_END(inst);
+        DW3000_SPI_BT_ADD_END(inst);
         err = dpl_sem_release(inst->spi_sem);
         assert(err == DPL_OK);
     }
@@ -390,7 +390,7 @@ hal_dw3000_read_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cm
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 1);
+    DW3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 0, 1);
 
     /* Reset the txrx_cb to make sure it has the correct instance
      * as argument */
@@ -405,7 +405,7 @@ hal_dw3000_read_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cm
 
     /* Faster read for shorter exchanges */
     if (cmd_size + length < inst->uwb_dev.txbuf_size &&
-        cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) {
+        cmd_size + length < MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT)) {
         memset(inst->uwb_dev.txbuf, 0, cmd_size + length);
         memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
 
@@ -428,13 +428,13 @@ hal_dw3000_read_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cm
         hal_gpio_write(inst->ss_pin, 1);
 
         memcpy(buffer, inst->uwb_dev.txbuf + cmd_size, length);
-        dw3000_SPI_BT_ADD_END(inst);
+        DW3000_SPI_BT_ADD_END(inst);
         rc = dpl_sem_release(inst->spi_sem);
         assert(rc == DPL_OK);
         return rc;
     }
 
-#if MYNEWT_VAL(dw3000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) < 1028
+#if MYNEWT_VAL(DW3000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT) < 1028
     rc = dpl_sem_pend(&inst->spi_nb_sem, DPL_TIMEOUT_NEVER);
     if (rc != DPL_OK) {
         inst->uwb_dev.status.sem_error = 1;
@@ -457,12 +457,12 @@ hal_dw3000_read_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cm
     rc = dpl_sem_release(&inst->spi_nb_sem);
     assert(rc == DPL_OK);
 
-    /* Nonblocking reads can only do a maximum of MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)
+    /* Nonblocking reads can only do a maximum of MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT)
      * bytes at a time. And
      * not read more than what can fit in the inst->uwb_dev.txbuf at a time.
      * TODO: Use SPIM_TXD_MAXCNT_MAX instead? */
-    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT))?
-        MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
+    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT))?
+        MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
     int bytes_left = length;
     int offset = 0;
     while (offset<length) {
@@ -533,14 +533,14 @@ hal_dw3000_write(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 0);
+    DW3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 0);
 
     hal_gpio_write(inst->ss_pin, 0);
 
 #if !defined(MYNEWT)
     /* Linux mode really, for when we can't split the command and data */
     assert(cmd_size + length < inst->uwb_dev.txbuf_size);
-    assert(cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT));
+    assert(cmd_size + length < MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT));
 
     memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
     memcpy(inst->uwb_dev.txbuf+cmd_size, buffer, length);
@@ -558,7 +558,7 @@ hal_dw3000_write(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint
 
     hal_gpio_write(inst->ss_pin, 1);
 
-    dw3000_SPI_BT_ADD_END(inst);
+    DW3000_SPI_BT_ADD_END(inst);
     rc = dpl_sem_release(inst->spi_sem);
     assert(rc == DPL_OK);
 early_exit:
@@ -587,7 +587,7 @@ hal_dw3000_write_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * c
         inst->uwb_dev.status.sem_error = 1;
         goto early_exit;
     }
-    dw3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 1);
+    DW3000_SPI_BT_ADD(inst, cmd, cmd_size, buffer, length, 1, 1);
 
     /* Reset the txrx_cb to make sure it has the correct instance
      * as argument */
@@ -602,7 +602,7 @@ hal_dw3000_write_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * c
 
     /* If command and data fit in inst->uwb_dev.txbuf, send immediately */
     if (cmd_size + length < inst->uwb_dev.txbuf_size &&
-        cmd_size + length < MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) {
+        cmd_size + length < MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT)) {
         memcpy(inst->uwb_dev.txbuf, cmd, cmd_size);
         memcpy(inst->uwb_dev.txbuf+cmd_size, buffer, length);
 
@@ -611,7 +611,7 @@ hal_dw3000_write_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * c
         return rc;
     }
 
-#if MYNEWT_VAL(dw3000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) < 1028
+#if MYNEWT_VAL(DW3000_HAL_SPI_BUFFER_SIZE) < 1024 || MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT) < 1028
     rc = dpl_sem_pend(&inst->spi_nb_sem, DPL_TIMEOUT_NEVER);
     if (rc != DPL_OK) {
         inst->uwb_dev.status.sem_error = 1;
@@ -630,10 +630,10 @@ hal_dw3000_write_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * c
     rc = dpl_sem_release(&inst->spi_nb_sem);
     assert(rc == DPL_OK);
 
-    /* Nonblocking writes can only do a maximum of MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)
+    /* Nonblocking writes can only do a maximum of MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT)
      * bytes at a time */
-    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT)) ?
-        MYNEWT_VAL(dw3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
+    int step = (inst->uwb_dev.txbuf_size > MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT)) ?
+        MYNEWT_VAL(DW3000_HAL_SPI_MAX_CNT) : inst->uwb_dev.txbuf_size;
     int bytes_left = length;
     int offset = 0;
     while (offset<length) {
