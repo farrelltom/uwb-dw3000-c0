@@ -54,4 +54,4 @@ void hal_dw3000_spi_txrx_cb(void *arg, int len);
 }
 #endif
 
-#endif /* _dw3000_HAL_H_ */
+#endif /* _DW3000_HAL_H_ */

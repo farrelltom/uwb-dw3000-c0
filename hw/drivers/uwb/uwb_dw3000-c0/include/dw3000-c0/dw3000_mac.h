@@ -42,7 +42,7 @@ extern "C" {
 #include <stats/stats.h>
 #include <dw3000-c0/dw3000_dev.h>
 
-#define DWT_DEVICE_ID   (0xDECA0130)        //!< dw3000 MP device ID
+#define DWT_DEVICE_ID   (0xDECA0130)        //!< DW3000 MP device ID
 
 //! constants for selecting the bit rate for data TX (and RX).
 //! These are defined for write (with just a shift) the TX_FCTRL register.
@@ -73,7 +73,7 @@ extern "C" {
 #define DWT_FF_RSVD_EN              0x040           //!< Reserved frame types allowed
 
 
-//! dw3000 SLEEP and WAKEUP configuration parameters.
+//! DW3000 SLEEP and WAKEUP configuration parameters.
 #define DWT_LOADLDO      0x1000                      //!< Load LDO tune value from OTP
 #define DWT_LOADUCODE    0x0800                      //!< Load ucode from OTP
 #define DWT_PRESRV_SLEEP 0x0100                      //!< PRES_SLEEP  on wakeup preserve sleep bit
@@ -89,10 +89,10 @@ extern "C" {
 #define DWT_WAKE_WK      0x2                        //!< Wake up on WAKEUP PIN
 #define DWT_SLP_EN       0x1                        //!< Enable sleep/deep sleep functionality
 
-//! dw3000 OTP operating parameter set selection.
-#define DWT_OPSET_64LEN   0x0          //!< dw3000 OTP operating parameter set selection
-#define DWT_OPSET_TIGHT   0x1          //!< dw3000 OTP operating parameter set selection
-#define DWT_OPSET_DEFLT   0x2          //!< dw3000 OTP operating parameter set selection
+//! DW3000 OTP operating parameter set selection.
+#define DWT_OPSET_64LEN   0x0          //!< DW3000 OTP operating parameter set selection
+#define DWT_OPSET_TIGHT   0x1          //!< DW3000 OTP operating parameter set selection
+#define DWT_OPSET_DEFLT   0x2          //!< DW3000 OTP operating parameter set selection
 
 //! MAC frame format.
 #define MAC_FFORMAT_FCTRL 0x0         //!<  MAC frame format - Control parameter selection
@@ -182,4 +182,4 @@ void dw3000_configcwmode(struct _dw3000_dev_instance_t * inst, uint8_t chan);
 #ifdef __cplusplus
 }
 #endif
-#endif /* _dw3000_MAC_H_ */
+#endif /* _DW3000_MAC_H_ */

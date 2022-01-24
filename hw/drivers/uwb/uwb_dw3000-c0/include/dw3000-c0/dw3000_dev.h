@@ -72,7 +72,7 @@ typedef struct _dw3000_dev_control_t{
 }dw3000_dev_control_t;
 
 
-//! dw3000 receiver diagnostics parameters.
+//! DW3000 receiver diagnostics parameters.
 typedef struct _dw3000_dev_rxdiag_t{
     struct uwb_dev_rxdiag rxd;
     union {
@@ -94,21 +94,21 @@ typedef struct _dw3000_dev_rxdiag_t{
     uint16_t    pacc_cnt;                   //!<  Count of preamble symbols accumulated
 } __attribute__((packed, aligned(1))) dw3000_dev_rxdiag_t;
 
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
-#define dw3000_SYS_STATUS_BT_PTR(_I) _I->sys_status_bt[_I->sys_status_bt_idx%MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)]
-#define dw3000_SYS_STATUS_BT_ADD(_I,_S,_U) _I->sys_status_bt[++_I->sys_status_bt_idx%MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)] = \
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
+#define DW3000_SYS_STATUS_BT_PTR(_I) _I->sys_status_bt[_I->sys_status_bt_idx%MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)]
+#define DW3000_SYS_STATUS_BT_ADD(_I,_S,_U) _I->sys_status_bt[++_I->sys_status_bt_idx%MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)] = \
         (struct dw3000_sys_status_backtrace) {.utime=_U, .sys_status_lo=_S}
-#define dw3000_SYS_STATUS_BT_HI(_I,_S) dw3000_SYS_STATUS_BT_PTR(_I).sys_status_hi = _S
-#define dw3000_SYS_STATUS_BT_FCTRL(_I,_FCTRL) dw3000_SYS_STATUS_BT_PTR(_I).fctrl = _FCTRL
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_HI)
-#define dw3000_SYS_STATUS_ASSEMBLE(_P) (((uint64_t)_P->sys_status_hi)<<32)|(uint64_t)_P->sys_status_lo
-#define dw3000_SYS_STATUS_ASSEMBLE_LEN (5)
+#define DW3000_SYS_STATUS_BT_HI(_I,_S) DW3000_SYS_STATUS_BT_PTR(_I).sys_status_hi = _S
+#define DW3000_SYS_STATUS_BT_FCTRL(_I,_FCTRL) DW3000_SYS_STATUS_BT_PTR(_I).fctrl = _FCTRL
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_HI)
+#define DW3000_SYS_STATUS_ASSEMBLE(_P) (((uint64_t)_P->sys_status_hi)<<32)|(uint64_t)_P->sys_status_lo
+#define DW3000_SYS_STATUS_ASSEMBLE_LEN (5)
 #else
-#define dw3000_SYS_STATUS_ASSEMBLE(_P) (uint64_t)_P->sys_status_lo
-#define dw3000_SYS_STATUS_ASSEMBLE_LEN (4)
+#define DW3000_SYS_STATUS_ASSEMBLE(_P) (uint64_t)_P->sys_status_lo
+#define DW3000_SYS_STATUS_ASSEMBLE_LEN (4)
 #endif
 
-//! dw3000 Interrupt backtrace structure
+//! DW3000 Interrupt backtrace structure
 struct dw3000_sys_status_backtrace {
     uint32_t utime;
     uint32_t sys_status_lo;
@@ -119,30 +119,30 @@ struct dw3000_sys_status_backtrace {
 };
 #endif
 
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
-#define dw3000_SPI_BT_PTR(_I) _I->spi_bt[_I->spi_bt_idx%MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)]
-#define dw3000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) if(!_I->spi_bt_lock){struct dw3000_spi_backtrace *p=&_I->spi_bt[++_I->spi_bt_idx%MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)]; \
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
+#define DW3000_SPI_BT_PTR(_I) _I->spi_bt[_I->spi_bt_idx%MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)]
+#define DW3000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) if(!_I->spi_bt_lock){struct dw3000_spi_backtrace *p=&_I->spi_bt[++_I->spi_bt_idx%MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)]; \
         *p = (struct dw3000_spi_backtrace){.utime=dpl_cputime_get32(), .cmd_len=_CLEN, .data_len=_DLEN, .is_write=_IS_WR, .non_blocking=_NB}; \
         memcpy(p->cmd,_CMD,_CLEN);_I->spi_bt_datap=_DATA;}
-#define dw3000_SPI_BT_ADD_END(_I) if(!_I->spi_bt_lock){struct dw3000_spi_backtrace *p=&dw3000_SPI_BT_PTR(_I); \
+#define DW3000_SPI_BT_ADD_END(_I) if(!_I->spi_bt_lock){struct dw3000_spi_backtrace *p=&DW3000_SPI_BT_PTR(_I); \
         p->utime_end=dpl_cputime_get32();                                 \
         memcpy(p->data,_I->spi_bt_datap,(p->data_len>sizeof(p->data))?sizeof(p->data):p->data_len);}
 
-//! dw3000 SPI backtrace structure
+//! DW3000 SPI backtrace structure
 struct dw3000_spi_backtrace {
     uint32_t utime;
     uint8_t cmd[4];
     uint8_t cmd_len;
     uint8_t is_write:1;
     uint8_t non_blocking:1;
-    uint8_t data[MYNEWT_VAL(dw3000_SPI_BACKTRACE_DATA_LEN)];
+    uint8_t data[MYNEWT_VAL(DW3000_SPI_BACKTRACE_DATA_LEN)];
     uint16_t data_len;
     uint32_t utime_end;
 };
 #else
-#define dw3000_SPI_BT_PTR(_I) {}
-#define dw3000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) {}
-#define dw3000_SPI_BT_ADD_END(_I) {}
+#define DW3000_SPI_BT_PTR(_I) {}
+#define DW3000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) {}
+#define DW3000_SPI_BT_ADD_END(_I) {}
 #endif
 
 
@@ -180,27 +180,27 @@ typedef struct _dw3000_dev_instance_t{
 #if MYNEWT_VAL(CIR_ENABLED)
     struct cir_dw3000_instance * cir;           //!< CIR instance (duplicate of uwb_dev->cir)
 #endif
-    dw3000_dev_rxdiag_t rxdiag;                    //!< dw3000 receive diagnostics
-    dw3000_dev_control_t control;                  //!< dw3000 device control parameters
+    dw3000_dev_rxdiag_t rxdiag;                    //!< DW3000 receive diagnostics
+    dw3000_dev_control_t control;                  //!< DW3000 device control parameters
 
-#if MYNEWT_VAL(dw3000_LWIP)
+#if MYNEWT_VAL(DW3000_LWIP)
     void (* lwip_rx_complete_cb) (struct _dw3000_dev_instance_t *);
 #endif
-#if MYNEWT_VAL(dw3000_MAC_STATS)
+#if MYNEWT_VAL(DW3000_MAC_STATS)
     STATS_SECT_DECL(mac_stat_section) stat;
 #endif
-#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
-    struct dw3000_sys_status_backtrace sys_status_bt[MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)];
+#if MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
+    struct dw3000_sys_status_backtrace sys_status_bt[MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)];
     uint16_t sys_status_bt_idx;
     uint8_t sys_status_bt_lock;
 #endif
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
-    struct dw3000_spi_backtrace spi_bt[MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)];
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)
+    struct dw3000_spi_backtrace spi_bt[MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN)];
     uint16_t spi_bt_idx;
     uint8_t spi_bt_lock;
     uint8_t* spi_bt_datap;
 #endif
-#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN) || MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(DW3000_SPI_BACKTRACE_LEN) || MYNEWT_VAL(DW3000_SYS_STATUS_BACKTRACE_LEN)
     /* To allow translation from ticks to usecs in gdb during backtrace*/
     uint32_t bt_ticks2usec;
 #endif
@@ -249,4 +249,4 @@ struct uwb_dev_status dw3000_dev_enter_sleep_after_rx(dw3000_dev_instance_t * in
 }
 #endif
 
-#endif /* _dw3000_DEV_H_ */
+#endif /* _DW3000_DEV_H_ */

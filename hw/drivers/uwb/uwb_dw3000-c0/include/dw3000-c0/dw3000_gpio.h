@@ -68,4 +68,4 @@ void dw3000_gpio_write(struct _dw3000_dev_instance_t * inst, int gpioNum, int va
 }
 #endif
 
-#endif /* _dw3000_GPIO_H_ */
+#endif /* _DW3000_GPIO_H_ */

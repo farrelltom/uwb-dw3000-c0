@@ -56,4 +56,4 @@ void dw3000_opt_read(struct _dw3000_dev_instance_t * inst, uint32_t address, uin
 }
 #endif
 
-#endif /* _dw3000_OTP_H_ */
+#endif /* _DW3000_OTP_H_ */

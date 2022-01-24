@@ -42,7 +42,7 @@ extern "C" {
 /* mask and shift */
 #define DEV_ID_REV_MASK         0x0000000FUL    /* Revision */
 #define DEV_ID_VER_MASK         0x000000F0UL    /* Version */
-#define DEV_ID_MODEL_MASK       0x0000FF00UL    /* The MODEL identifies the device. The dw3000 is device type 0x01 */
+#define DEV_ID_MODEL_MASK       0x0000FF00UL    /* The MODEL identifies the device. The DW3000 is device type 0x01 */
 #define DEV_ID_RIDTAG_MASK      0xFFFF0000UL    /* Register Identification Tag 0XDECA */
 
 /****************************************************************************//**
@@ -645,7 +645,7 @@ extern "C" {
 
 /****************************************************************************//**
  * @brief Bit definitions for register AGC_CTRL
- * Please take care to write to this register as doing so may cause the dw3000 to malfunction
+ * Please take care to write to this register as doing so may cause the DW3000 to malfunction
 **/
 #define AGC_CTRL_ID             0x23            /* Automatic Gain Control configuration */
 #define AGC_CTRL_LEN            (32)
@@ -656,20 +656,20 @@ extern "C" {
 #define AGC_CTRL1_MASK          0x0001          /* access mask to AGC configuration and control register */
 #define AGC_CTRL1_DIS_AM        0x0001          /* Disable AGC Measurement. The DIS_AM bit is set by default. */
 /* offset from AGC_CTRL_ID in bytes */
-/* Please take care not to write other values to this register as doing so may cause the dw3000 to malfunction */
+/* Please take care not to write other values to this register as doing so may cause the DW3000 to malfunction */
 #define AGC_TUNE1_OFFSET        (0x04)
 #define AGC_TUNE1_LEN           (2)
 #define AGC_TUNE1_MASK          0xFFFF          /* It is a 16-bit tuning register for the AGC. */
 #define AGC_TUNE1_16M           0x8870
 #define AGC_TUNE1_64M           0x889B
 /* offset from AGC_CTRL_ID in bytes */
-/* Please take care not to write other values to this register as doing so may cause the dw3000 to malfunction */
+/* Please take care not to write other values to this register as doing so may cause the DW3000 to malfunction */
 #define AGC_TUNE2_OFFSET        (0x0C)
 #define AGC_TUNE2_LEN           (4)
 #define AGC_TUNE2_MASK          0xFFFFFFFFUL
 #define AGC_TUNE2_VAL           0X2502A907UL
 /* offset from AGC_CTRL_ID in bytes */
-/* Please take care not to write other values to this register as doing so may cause the dw3000 to malfunction */
+/* Please take care not to write other values to this register as doing so may cause the DW3000 to malfunction */
 #define AGC_TUNE3_OFFSET        (0x12)
 #define AGC_TUNE3_LEN           (2)
 #define AGC_TUNE3_MASK          0xFFFF
@@ -1047,7 +1047,7 @@ extern "C" {
 #define FS_CTRL_ID              0x2B            /* Frequency synthesiser control block */
 #define FS_CTRL_LEN             (21)
 /* offset from FS_CTRL_ID in bytes */
-#define FS_RES1_OFFSET          0x00            /* reserved area. Please take care not to write to this area as doing so may cause the dw3000 to malfunction. */
+#define FS_RES1_OFFSET          0x00            /* reserved area. Please take care not to write to this area as doing so may cause the DW3000 to malfunction. */
 #define FS_RES1_LEN             (7)
 /* offset from FS_CTRL_ID in bytes */
 #define FS_PLLCFG_OFFSET        0x07            /* Frequency synthesiser � PLL configuration */
@@ -1068,7 +1068,7 @@ extern "C" {
 #define FS_PLLTUNE_CH5          0xBE            /* Operating Channel 5 */
 #define FS_PLLTUNE_CH7          FS_PLLTUNE_CH5  /* Operating Channel 7 (same as 5) */
 /* offset from FS_CTRL_ID in bytes */
-#define FS_RES2_OFFSET          0x0C    /* reserved area. Please take care not to write to this area as doing so may cause the dw3000 to malfunction. */
+#define FS_RES2_OFFSET          0x0C    /* reserved area. Please take care not to write to this area as doing so may cause the DW3000 to malfunction. */
 #define FS_RES2_LEN             (2)
 /* offset from FS_CTRL_ID in bytes */
 #define FS_XTALT_OFFSET         0x0E    /* Frequency synthesiser � Crystal trim */
@@ -1076,7 +1076,7 @@ extern "C" {
 #define FS_XTALT_MASK           0x1F    /* Crystal Trim. Crystals may be trimmed using this register setting to tune out errors, see 8.1 � IC Calibration � Crystal Oscillator Trim. */
 #define FS_XTALT_MIDRANGE       0x10
 /* offset from FS_CTRL_ID in bytes */
-#define FS_RES3_OFFSET          0x0F    /* reserved area. Please take care not to write to this area as doing so may cause the dw3000 to malfunction. */
+#define FS_RES3_OFFSET          0x0F    /* reserved area. Please take care not to write to this area as doing so may cause the DW3000 to malfunction. */
 #define FS_RES3_LEN             (6)
 
 /****************************************************************************//**
@@ -1085,7 +1085,7 @@ extern "C" {
 #define AON_ID                  0x2C            /* Always-On register set */
 #define AON_LEN                 (12)
 /* offset from AON_ID in bytes */
-#define AON_WCFG_OFFSET         0x00    /* used to control what the dw3000 IC does as it wakes up from low-power SLEEP or DEEPSLEEPstates. */
+#define AON_WCFG_OFFSET         0x00    /* used to control what the DW3000 IC does as it wakes up from low-power SLEEP or DEEPSLEEPstates. */
 #define AON_WCFG_LEN            (2)
 #define AON_WCFG_MASK           0x09CB  /* access mask to AON_WCFG register*/
 #define AON_WCFG_ONW_RADC       0x0001  /* On Wake-up Run the (temperature and voltage) Analog-to-Digital Convertors */
@@ -1093,15 +1093,15 @@ extern "C" {
 #define AON_WCFG_ONW_LEUI       0x0008  /* On Wake-up load the EUI from OTP memory into Register file: 0x01 � Extended Unique Identifier. */
 #define AON_WCFG_ONW_LDC        0x0040  /* On Wake-up load configurations from the AON memory into the host interface register set */
 #define AON_WCFG_ONW_L64P       0x0080  /* On Wake-up load the Length64 receiver operating parameter set */
-#define AON_WCFG_PRES_SLEEP     0x0100  /* Preserve Sleep. This bit determines what the dw3000 does with respect to the ARXSLP and ATXSLP sleep controls */
+#define AON_WCFG_PRES_SLEEP     0x0100  /* Preserve Sleep. This bit determines what the DW3000 does with respect to the ARXSLP and ATXSLP sleep controls */
 #define AON_WCFG_ONW_LLDE       0x0800  /* On Wake-up load the LDE microcode. */
 #define AON_WCFG_ONW_LLDO       0x1000  /* On Wake-up load the LDO tune value. */
 /* offset from AON_ID in bytes */
 #define AON_CTRL_OFFSET         0x02    /* The bits in this register in general cause direct activity within the AON block with respect to the stored AON memory */
 #define AON_CTRL_LEN            (1)
 #define AON_CTRL_MASK           0x8F    /* access mask to AON_CTRL register */
-#define AON_CTRL_RESTORE        0x01    /* When this bit is set the dw3000 will copy the user configurations from the AON memory to the host interface register set. */
-#define AON_CTRL_SAVE           0x02    /* When this bit is set the dw3000 will copy the user configurations from the host interface register set into the AON memory */
+#define AON_CTRL_RESTORE        0x01    /* When this bit is set the DW3000 will copy the user configurations from the AON memory to the host interface register set. */
+#define AON_CTRL_SAVE           0x02    /* When this bit is set the DW3000 will copy the user configurations from the host interface register set into the AON memory */
 #define AON_CTRL_UPL_CFG        0x04    /* Upload the AON block configurations to the AON  */
 #define AON_CTRL_DCA_READ       0x08    /* Direct AON memory access read */
 #define AON_CTRL_DCA_ENAB       0x80    /* Direct AON memory access enable bit */
@@ -1122,7 +1122,7 @@ extern "C" {
 #define AON_CFG0_WAKE_SPI           0x00000004UL    /* Wake using SPI access SPICSn */
 #define AON_CFG0_WAKE_CNT           0x00000008UL    /* Wake when sleep counter elapses */
 #define AON_CFG0_LPDIV_EN           0x00000010UL    /* Low power divider enable configuration */
-#define AON_CFG0_LPCLKDIVA_MASK     0x0000FFE0UL    /* divider count for dividing the raw dw3000 XTAL oscillator frequency to set an LP clock frequency */
+#define AON_CFG0_LPCLKDIVA_MASK     0x0000FFE0UL    /* divider count for dividing the raw DW3000 XTAL oscillator frequency to set an LP clock frequency */
 #define AON_CFG0_LPCLKDIVA_SHIFT    (5)
 #define AON_CFG0_SLEEP_TIM          0xFFFF0000UL    /* Sleep time. This field configures the sleep time count elapse value */
 #define AON_CFG0_SLEEP_SHIFT        (16)
@@ -1132,7 +1132,7 @@ extern "C" {
 #define AON_CFG1_LEN            (2)
 #define AON_CFG1_MASK           0x0007  /* aceess mask to AON_CFG1 */
 #define AON_CFG1_SLEEP_CEN      0x0001  /* This bit enables the sleep counter */
-#define AON_CFG1_SMXX           0x0002  /* This bit needs to be set to 0 for correct operation in the SLEEP state within the dw3000 */
+#define AON_CFG1_SMXX           0x0002  /* This bit needs to be set to 0 for correct operation in the SLEEP state within the DW3000 */
 #define AON_CFG1_LPOSC_CAL      0x0004  /* This bit enables the calibration function that measures the period of the IC�s internal low powered oscillator */
 
 /****************************************************************************//**
@@ -1306,7 +1306,7 @@ extern "C" {
 #define EVC_TPW_MASK            0x0FFF
 
 /* offset from DIG_DIAG_ID in bytes */
-#define EVC_RES1_OFFSET         0x1C        /* Please take care not to write to this register as doing so may cause the dw3000 to malfunction. */
+#define EVC_RES1_OFFSET         0x1C        /* Please take care not to write to this register as doing so may cause the DW3000 to malfunction. */
 
 /* offset from DIG_DIAG_ID in bytes */
 #define DIAG_TMC_OFFSET         0x24
@@ -1317,7 +1317,7 @@ extern "C" {
 
 /****************************************************************************//**
  * @brief Bit definitions for register 0x30-0x35
- * Please take care not to write to these registers as doing so may cause the dw3000 to malfunction.
+ * Please take care not to write to these registers as doing so may cause the DW3000 to malfunction.
 **/
 #define REG_30_ID_RESERVED      0x30
 #define REG_31_ID_RESERVED      0x31
@@ -1361,8 +1361,8 @@ extern "C" {
 #define PMSC_CTRL1_LEN          (4)
 #define PMSC_CTRL1_MASK         0xFC02F802UL    /* access mask to register PMSC_CTRL1 */
 #define PMSC_CTRL1_ARX2INIT     0x00000002UL    /* Automatic transition from receive mode into the INIT state */
-#define PMSC_CTRL1_ATXSLP       0x00000800UL    /* If this bit is set then the dw3000 will automatically transition into SLEEP or DEEPSLEEP mode after transmission of a frame */
-#define PMSC_CTRL1_ARXSLP       0x00001000UL    /* this bit is set then the dw3000 will automatically transition into SLEEP mode after a receive attempt */
+#define PMSC_CTRL1_ATXSLP       0x00000800UL    /* If this bit is set then the DW3000 will automatically transition into SLEEP or DEEPSLEEP mode after transmission of a frame */
+#define PMSC_CTRL1_ARXSLP       0x00001000UL    /* this bit is set then the DW3000 will automatically transition into SLEEP mode after a receive attempt */
 #define PMSC_CTRL1_SNOZE        0x00002000UL    /* Snooze Enable */
 #define PMSC_CTRL1_SNOZR        0x00004000UL    /* The SNOZR bit is set to allow the snooze timer to repeat twice */
 #define PMSC_CTRL1_PLLSYN       0x00008000UL    /* This enables a special 1 GHz clock used for some external SYNC modes */
@@ -1396,7 +1396,7 @@ extern "C" {
 
 /****************************************************************************//**
  * @brief Bit definitions for register 0x37-0x3F
- * Please take care not to write to these registers as doing so may cause the dw3000 to malfunction.
+ * Please take care not to write to these registers as doing so may cause the DW3000 to malfunction.
 **/
 #define REG_37_ID_RESERVED      0x37
 #define REG_38_ID_RESERVED      0x38
@@ -1408,7 +1408,7 @@ extern "C" {
 #define REG_3E_ID_RESERVED      0x3E
 #define REG_3F_ID_RESERVED      0x3F
 
-/* END dw3000 REGISTER DEFINITION */
+/* END DW3000 REGISTER DEFINITION */
 
 #ifdef __cplusplus
 }

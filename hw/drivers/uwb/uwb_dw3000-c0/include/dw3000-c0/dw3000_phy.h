@@ -53,14 +53,14 @@ extern "C" {
 
 //! Enum of txrf config parameters
 typedef enum {
-    dw3000_txrf_config_18db = 0,   //!< txrf_config_18db for 18db power gain
-    dw3000_txrf_config_15db,       //!< txrf_config_15db for 15db power gain
-    dw3000_txrf_config_12db,       //!< txrf_config_12db for 12db power gain
-    dw3000_txrf_config_9db,        //!< txrf_config_9db for 9db power gain
-    dw3000_txrf_config_6db,        //!< txrf_config_6db for 6db power gain
-    dw3000_txrf_config_3db,        //!< txrf_config_3db for 3db power gain
-    dw3000_txrf_config_0db,        //!< txrf_config_0db for 0db power gain
-    dw3000_txrf_config_off         //!< txrf_config_off
+    DW3000_txrf_config_18db = 0,   //!< txrf_config_18db for 18db power gain
+    DW3000_txrf_config_15db,       //!< txrf_config_15db for 15db power gain
+    DW3000_txrf_config_12db,       //!< txrf_config_12db for 12db power gain
+    DW3000_txrf_config_9db,        //!< txrf_config_9db for 9db power gain
+    DW3000_txrf_config_6db,        //!< txrf_config_6db for 6db power gain
+    DW3000_txrf_config_3db,        //!< txrf_config_3db for 3db power gain
+    DW3000_txrf_config_0db,        //!< txrf_config_0db for 0db power gain
+    DW3000_txrf_config_off         //!< txrf_config_off
 }coarse_power_levels_t;
 
 #define dw3000_power_value(COARSE,FINE) ((COARSE<<5) + (0xFFFFF & (uint16_t)(FINE * 2)))    //!< To configure power values
@@ -80,8 +80,8 @@ void dw3000_phy_interrupt_mask(struct _dw3000_dev_instance_t * inst, uint32_t bi
 
 #define dw3000_phy_set_rx_antennadelay(inst, rxDelay) dw3000_write_reg(inst, LDE_IF_ID, LDE_RXANTD_OFFSET, rxDelay, sizeof(uint16_t)) //!< Set the RX antenna delay for auto TX timestamp adjustment
 #define dw3000_phy_set_tx_antennadelay(inst, txDelay) dw3000_write_reg(inst, TX_ANTD_ID, TX_ANTD_OFFSET, txDelay, sizeof(uint16_t)) //!< Set the TX antenna delay for auto TX timestamp adjustment
-#define dw3000_phy_read_wakeuptemp(inst) ((uint8_t) dw3000_read_reg(inst, TX_CAL_ID, TC_SARL_SAR_LTEMP_OFFSET, sizeof(uint8_t))) //!< Read the temperature level of the dw3000 that was sampled on waking from Sleep/Deepsleep
-#define dw3000_phy_read_wakeupvbat(inst) ((uint8_t) dw3000_read_reg(inst, TX_CAL_ID, TC_SARL_SAR_LVBAT_OFFSET, sizeof(uint8_t))) //!< Read the battery voltage of the dw3000 that was sampled on waking from Sleep/Deepsleep
+#define dw3000_phy_read_wakeuptemp(inst) ((uint8_t) dw3000_read_reg(inst, TX_CAL_ID, TC_SARL_SAR_LTEMP_OFFSET, sizeof(uint8_t))) //!< Read the temperature level of the DW3000 that was sampled on waking from Sleep/Deepsleep
+#define dw3000_phy_read_wakeupvbat(inst) ((uint8_t) dw3000_read_reg(inst, TX_CAL_ID, TC_SARL_SAR_LVBAT_OFFSET, sizeof(uint8_t))) //!< Read the battery voltage of the DW3000 that was sampled on waking from Sleep/Deepsleep
 
 
 float dw3000_phy_read_wakeuptemp_SI(struct _dw3000_dev_instance_t * inst);
@@ -106,4 +106,4 @@ struct uwb_dev_status dw3000_phy_event_cnt_read(struct _dw3000_dev_instance_t *i
 }
 #endif
 
-#endif /* _dw3000_PHY_H_ */
+#endif /* _DW3000_PHY_H_ */
