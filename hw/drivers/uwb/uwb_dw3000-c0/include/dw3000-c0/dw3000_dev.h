@@ -18,7 +18,7 @@
  */
 
 /**
- * @file dw1000_dev.h
+ * @file dw3000_dev.h
  * @author UWB Core <uwbcore@gmail.com>
  * @date 2018
  * @brief Device file
@@ -27,7 +27,7 @@
  *
  */
 
-/** @ingroup api_dw1000
+/** @ingroup api_dw3000
  *  This is the dev base class which utilises the functions to perform initialization and necessary configurations on device.
  *  @{
  */
@@ -56,7 +56,7 @@ extern "C" {
 #define DWT_TIME_UNITS          (1.0/499.2e6/128.0) //!< DWT time units calculation
 
 //! Device control status bits.
-typedef struct _dw1000_dev_control_t{
+typedef struct _dw3000_dev_control_t{
     uint32_t wait4resp_enabled:1;           //!< Wait for the response
     uint32_t wait4resp_delay_enabled:1;     //!< Wait for the delayed response
     uint32_t delay_start_enabled:1;         //!< Transmit after delayed start
@@ -69,11 +69,11 @@ typedef struct _dw1000_dev_control_t{
     uint32_t cir_enable:1;                  //!< Enables reading CIR on this operation
     uint32_t rxauto_disable:1;              //!< Disable auto receive parameter
     uint32_t abs_timeout:1;                 //!< RX absolute timeout active
-}dw1000_dev_control_t;
+}dw3000_dev_control_t;
 
 
-//! DW1000 receiver diagnostics parameters.
-typedef struct _dw1000_dev_rxdiag_t{
+//! dw3000 receiver diagnostics parameters.
+typedef struct _dw3000_dev_rxdiag_t{
     struct uwb_dev_rxdiag rxd;
     union {
         struct _rx_time {
@@ -92,24 +92,24 @@ typedef struct _dw1000_dev_rxdiag_t{
         uint64_t rx_fqual;
     };
     uint16_t    pacc_cnt;                   //!<  Count of preamble symbols accumulated
-} __attribute__((packed, aligned(1))) dw1000_dev_rxdiag_t;
+} __attribute__((packed, aligned(1))) dw3000_dev_rxdiag_t;
 
-#if MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)
-#define DW1000_SYS_STATUS_BT_PTR(_I) _I->sys_status_bt[_I->sys_status_bt_idx%MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)]
-#define DW1000_SYS_STATUS_BT_ADD(_I,_S,_U) _I->sys_status_bt[++_I->sys_status_bt_idx%MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)] = \
-        (struct dw1000_sys_status_backtrace) {.utime=_U, .sys_status_lo=_S}
-#define DW1000_SYS_STATUS_BT_HI(_I,_S) DW1000_SYS_STATUS_BT_PTR(_I).sys_status_hi = _S
-#define DW1000_SYS_STATUS_BT_FCTRL(_I,_FCTRL) DW1000_SYS_STATUS_BT_PTR(_I).fctrl = _FCTRL
-#if MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_HI)
-#define DW1000_SYS_STATUS_ASSEMBLE(_P) (((uint64_t)_P->sys_status_hi)<<32)|(uint64_t)_P->sys_status_lo
-#define DW1000_SYS_STATUS_ASSEMBLE_LEN (5)
+#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+#define dw3000_SYS_STATUS_BT_PTR(_I) _I->sys_status_bt[_I->sys_status_bt_idx%MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)]
+#define dw3000_SYS_STATUS_BT_ADD(_I,_S,_U) _I->sys_status_bt[++_I->sys_status_bt_idx%MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)] = \
+        (struct dw3000_sys_status_backtrace) {.utime=_U, .sys_status_lo=_S}
+#define dw3000_SYS_STATUS_BT_HI(_I,_S) dw3000_SYS_STATUS_BT_PTR(_I).sys_status_hi = _S
+#define dw3000_SYS_STATUS_BT_FCTRL(_I,_FCTRL) dw3000_SYS_STATUS_BT_PTR(_I).fctrl = _FCTRL
+#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_HI)
+#define dw3000_SYS_STATUS_ASSEMBLE(_P) (((uint64_t)_P->sys_status_hi)<<32)|(uint64_t)_P->sys_status_lo
+#define dw3000_SYS_STATUS_ASSEMBLE_LEN (5)
 #else
-#define DW1000_SYS_STATUS_ASSEMBLE(_P) (uint64_t)_P->sys_status_lo
-#define DW1000_SYS_STATUS_ASSEMBLE_LEN (4)
+#define dw3000_SYS_STATUS_ASSEMBLE(_P) (uint64_t)_P->sys_status_lo
+#define dw3000_SYS_STATUS_ASSEMBLE_LEN (4)
 #endif
 
-//! DW1000 Interrupt backtrace structure
-struct dw1000_sys_status_backtrace {
+//! dw3000 Interrupt backtrace structure
+struct dw3000_sys_status_backtrace {
     uint32_t utime;
     uint32_t sys_status_lo;
     uint8_t sys_status_hi;
@@ -119,38 +119,38 @@ struct dw1000_sys_status_backtrace {
 };
 #endif
 
-#if MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN)
-#define DW1000_SPI_BT_PTR(_I) _I->spi_bt[_I->spi_bt_idx%MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN)]
-#define DW1000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) if(!_I->spi_bt_lock){struct dw1000_spi_backtrace *p=&_I->spi_bt[++_I->spi_bt_idx%MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN)]; \
-        *p = (struct dw1000_spi_backtrace){.utime=dpl_cputime_get32(), .cmd_len=_CLEN, .data_len=_DLEN, .is_write=_IS_WR, .non_blocking=_NB}; \
+#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+#define dw3000_SPI_BT_PTR(_I) _I->spi_bt[_I->spi_bt_idx%MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)]
+#define dw3000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) if(!_I->spi_bt_lock){struct dw3000_spi_backtrace *p=&_I->spi_bt[++_I->spi_bt_idx%MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)]; \
+        *p = (struct dw3000_spi_backtrace){.utime=dpl_cputime_get32(), .cmd_len=_CLEN, .data_len=_DLEN, .is_write=_IS_WR, .non_blocking=_NB}; \
         memcpy(p->cmd,_CMD,_CLEN);_I->spi_bt_datap=_DATA;}
-#define DW1000_SPI_BT_ADD_END(_I) if(!_I->spi_bt_lock){struct dw1000_spi_backtrace *p=&DW1000_SPI_BT_PTR(_I); \
+#define dw3000_SPI_BT_ADD_END(_I) if(!_I->spi_bt_lock){struct dw3000_spi_backtrace *p=&dw3000_SPI_BT_PTR(_I); \
         p->utime_end=dpl_cputime_get32();                                 \
         memcpy(p->data,_I->spi_bt_datap,(p->data_len>sizeof(p->data))?sizeof(p->data):p->data_len);}
 
-//! DW1000 SPI backtrace structure
-struct dw1000_spi_backtrace {
+//! dw3000 SPI backtrace structure
+struct dw3000_spi_backtrace {
     uint32_t utime;
     uint8_t cmd[4];
     uint8_t cmd_len;
     uint8_t is_write:1;
     uint8_t non_blocking:1;
-    uint8_t data[MYNEWT_VAL(DW1000_SPI_BACKTRACE_DATA_LEN)];
+    uint8_t data[MYNEWT_VAL(dw3000_SPI_BACKTRACE_DATA_LEN)];
     uint16_t data_len;
     uint32_t utime_end;
 };
 #else
-#define DW1000_SPI_BT_PTR(_I) {}
-#define DW1000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) {}
-#define DW1000_SPI_BT_ADD_END(_I) {}
+#define dw3000_SPI_BT_PTR(_I) {}
+#define dw3000_SPI_BT_ADD(_I,_CMD,_CLEN,_DATA,_DLEN,_IS_WR,_NB) {}
+#define dw3000_SPI_BT_ADD_END(_I) {}
 #endif
 
 
 
-struct _dw1000_dev_instance_t;
+struct _dw3000_dev_instance_t;
 
 //! Device instance parameters.
-typedef struct _dw1000_dev_instance_t{
+typedef struct _dw3000_dev_instance_t{
     struct uwb_dev uwb_dev;                     //!< Common generalising struct uwb_dev
 
     struct dpl_sem * spi_sem;                   //!< Pointer to global spi bus semaphore
@@ -178,36 +178,36 @@ typedef struct _dw1000_dev_instance_t{
 
     struct hal_spi_settings spi_settings;  //!< Structure of SPI settings in hal layer
 #if MYNEWT_VAL(CIR_ENABLED)
-    struct cir_dw1000_instance * cir;           //!< CIR instance (duplicate of uwb_dev->cir)
+    struct cir_dw3000_instance * cir;           //!< CIR instance (duplicate of uwb_dev->cir)
 #endif
-    dw1000_dev_rxdiag_t rxdiag;                    //!< DW1000 receive diagnostics
-    dw1000_dev_control_t control;                  //!< DW1000 device control parameters
+    dw3000_dev_rxdiag_t rxdiag;                    //!< dw3000 receive diagnostics
+    dw3000_dev_control_t control;                  //!< dw3000 device control parameters
 
-#if MYNEWT_VAL(DW1000_LWIP)
-    void (* lwip_rx_complete_cb) (struct _dw1000_dev_instance_t *);
+#if MYNEWT_VAL(dw3000_LWIP)
+    void (* lwip_rx_complete_cb) (struct _dw3000_dev_instance_t *);
 #endif
-#if MYNEWT_VAL(DW1000_MAC_STATS)
+#if MYNEWT_VAL(dw3000_MAC_STATS)
     STATS_SECT_DECL(mac_stat_section) stat;
 #endif
-#if MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)
-    struct dw1000_sys_status_backtrace sys_status_bt[MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)];
+#if MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
+    struct dw3000_sys_status_backtrace sys_status_bt[MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)];
     uint16_t sys_status_bt_idx;
     uint8_t sys_status_bt_lock;
 #endif
-#if MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN)
-    struct dw1000_spi_backtrace spi_bt[MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN)];
+#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)
+    struct dw3000_spi_backtrace spi_bt[MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN)];
     uint16_t spi_bt_idx;
     uint8_t spi_bt_lock;
     uint8_t* spi_bt_datap;
 #endif
-#if MYNEWT_VAL(DW1000_SPI_BACKTRACE_LEN) || MYNEWT_VAL(DW1000_SYS_STATUS_BACKTRACE_LEN)
+#if MYNEWT_VAL(dw3000_SPI_BACKTRACE_LEN) || MYNEWT_VAL(dw3000_SYS_STATUS_BACKTRACE_LEN)
     /* To allow translation from ticks to usecs in gdb during backtrace*/
     uint32_t bt_ticks2usec;
 #endif
-} dw1000_dev_instance_t;
+} dw3000_dev_instance_t;
 
 //! SPI and other init parameters
-struct dw1000_dev_cfg {
+struct dw3000_dev_cfg {
     struct dpl_sem *spi_sem;      //!< Pointer to os_sem structure to lock spi bus
 
     int spi_baudrate;             //!< SPI Baudrate (<20MHz)
@@ -222,23 +222,23 @@ struct dw1000_dev_cfg {
     int32_t  ext_clock_delay;     //!< External clock delay
 };
 
-int dw1000_dev_init(struct os_dev *odev, void *arg);
-void dw1000_dev_deinit(dw1000_dev_instance_t * inst);
-int dw1000_dev_config(dw1000_dev_instance_t * inst);
-void dw1000_softreset(dw1000_dev_instance_t * inst);
-struct uwb_dev_status dw1000_read(dw1000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uint8_t * buffer, uint16_t length);
-struct uwb_dev_status dw1000_write(dw1000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uint8_t * buffer, uint16_t length);
-uint64_t dw1000_read_reg(dw1000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, size_t nsize);
-void dw1000_write_reg(dw1000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uint64_t val, size_t nsize);
-void dw1000_dev_set_sleep_timer(dw1000_dev_instance_t * inst, uint16_t count);
-void dw1000_dev_configure_sleep(dw1000_dev_instance_t * inst);
-struct uwb_dev_status dw1000_dev_enter_sleep(dw1000_dev_instance_t * inst);
-struct uwb_dev_status dw1000_dev_wakeup(dw1000_dev_instance_t * inst);
-struct uwb_dev_status dw1000_dev_enter_sleep_after_tx(dw1000_dev_instance_t * inst, uint8_t enable);
-struct uwb_dev_status dw1000_dev_enter_sleep_after_rx(dw1000_dev_instance_t * inst, uint8_t enable);
+int dw3000_dev_init(struct os_dev *odev, void *arg);
+void dw3000_dev_deinit(dw3000_dev_instance_t * inst);
+int dw3000_dev_config(dw3000_dev_instance_t * inst);
+void dw3000_softreset(dw3000_dev_instance_t * inst);
+struct uwb_dev_status dw3000_read(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uint8_t * buffer, uint16_t length);
+struct uwb_dev_status dw3000_write(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uint8_t * buffer, uint16_t length);
+uint64_t dw3000_read_reg(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, size_t nsize);
+void dw3000_write_reg(dw3000_dev_instance_t * inst, uint16_t reg, uint16_t subaddress, uint64_t val, size_t nsize);
+void dw3000_dev_set_sleep_timer(dw3000_dev_instance_t * inst, uint16_t count);
+void dw3000_dev_configure_sleep(dw3000_dev_instance_t * inst);
+struct uwb_dev_status dw3000_dev_enter_sleep(dw3000_dev_instance_t * inst);
+struct uwb_dev_status dw3000_dev_wakeup(dw3000_dev_instance_t * inst);
+struct uwb_dev_status dw3000_dev_enter_sleep_after_tx(dw3000_dev_instance_t * inst, uint8_t enable);
+struct uwb_dev_status dw3000_dev_enter_sleep_after_rx(dw3000_dev_instance_t * inst, uint8_t enable);
 
-#define dw1000_dwt_usecs_to_usecs(_t) (double)( (_t) * (0x10000UL/(128*499.2)))
-#define dw1000_usecs_to_dwt_usecs(_t) (double)( (_t) / dw1000_dwt_usecs_to_usecs(1.0))
+#define dw3000_dwt_usecs_to_usecs(_t) (double)( (_t) * (0x10000UL/(128*499.2)))
+#define dw3000_usecs_to_dwt_usecs(_t) (double)( (_t) / dw3000_dwt_usecs_to_usecs(1.0))
 
 /**
  * @}
@@ -249,4 +249,4 @@ struct uwb_dev_status dw1000_dev_enter_sleep_after_rx(dw1000_dev_instance_t * in
 }
 #endif
 
-#endif /* _DW1000_DEV_H_ */
+#endif /* _dw3000_DEV_H_ */

@@ -18,7 +18,7 @@
  */
 
 /**
- * @file dw1000_otp.h
+ * @file dw3000_otp.h
  * @author UWB Core <uwbcore@gmail.com>
  * @date 2018
  * @brief one time programmable memory
@@ -49,11 +49,11 @@ extern "C" {
 #define OTP_VTEMP_ADDRESS  (0x09)         //!< OTP addrres definition for temperature
 #define OTP_XTRIM_ADDRESS  (0x1E)         //!< OTP address definition for crystal trim
 
-uint32_t _dw1000_otp_read(struct _dw1000_dev_instance_t * inst, uint16_t address);
-void dw1000_opt_read(struct _dw1000_dev_instance_t * inst, uint32_t address, uint32_t * buffer, uint16_t length);
+uint32_t _dw3000_otp_read(struct _dw3000_dev_instance_t * inst, uint16_t address);
+void dw3000_opt_read(struct _dw3000_dev_instance_t * inst, uint32_t address, uint32_t * buffer, uint16_t length);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _DW1000_OTP_H_ */
+#endif /* _dw3000_OTP_H_ */

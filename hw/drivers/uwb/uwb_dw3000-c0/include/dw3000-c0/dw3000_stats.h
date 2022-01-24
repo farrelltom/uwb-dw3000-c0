@@ -18,7 +18,7 @@
  */
 
 /**
- * @file dw1000_stats.h
+ * @file dw3000_stats.h
  * @author UWB Core <uwbcore@gmail.com>
  * @date 10/24/18
  * @brief ftypes file
@@ -37,7 +37,7 @@
 extern "C" {
 #endif
 
-#if MYNEWT_VAL(DW1000_MAC_STATS)
+#if MYNEWT_VAL(dw3000_MAC_STATS)
 STATS_SECT_START(mac_stat_section)
     STATS_SECT_ENTRY(tx_bytes)
     STATS_SECT_ENTRY(rx_bytes)
@@ -55,4 +55,4 @@ STATS_SECT_END
 #ifdef __cplusplus
 }
 #endif
-#endif /* _DW1000_STATS_H_ */
+#endif /* _dw3000_STATS_H_ */

@@ -18,7 +18,7 @@
  */
 
 /**
- * @file dw1000_hal.h
+ * @file dw3000_hal.h
  * @author UWB Core <uwbcore@gmail.com>
  * @date 2018
  * @brief Hardware Abstraction Layer
@@ -39,19 +39,19 @@ extern "C" {
 #include <dw3000-c0/dw3000_dev.h>
 #include <dw3000-c0/dw3000_phy.h>
 
-struct _dw1000_dev_instance_t * hal_dw1000_inst(uint8_t idx);     //!< Structure of hal instances.
-void hal_dw1000_reset(struct _dw1000_dev_instance_t * inst);
-int hal_dw1000_read(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
-int hal_dw1000_read_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
-int hal_dw1000_write(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
-int hal_dw1000_write_noblock(struct _dw1000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
-int hal_dw1000_rw_noblock_wait(struct _dw1000_dev_instance_t * inst, uint32_t timeout_ms);
+struct _dw3000_dev_instance_t * hal_dw3000_inst(uint8_t idx);     //!< Structure of hal instances.
+void hal_dw3000_reset(struct _dw3000_dev_instance_t * inst);
+int hal_dw3000_read(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
+int hal_dw3000_read_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
+int hal_dw3000_write(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
+int hal_dw3000_write_noblock(struct _dw3000_dev_instance_t * inst, const uint8_t * cmd, uint8_t cmd_size, uint8_t * buffer, uint16_t length);
+int hal_dw3000_rw_noblock_wait(struct _dw3000_dev_instance_t * inst, uint32_t timeout_ms);
 
-int hal_dw1000_wakeup(struct _dw1000_dev_instance_t * inst);
-int hal_dw1000_get_rst(struct _dw1000_dev_instance_t * inst);
-void hal_dw1000_spi_txrx_cb(void *arg, int len);
+int hal_dw3000_wakeup(struct _dw3000_dev_instance_t * inst);
+int hal_dw3000_get_rst(struct _dw3000_dev_instance_t * inst);
+void hal_dw3000_spi_txrx_cb(void *arg, int len);
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _DW1000_HAL_H_ */
+#endif /* _dw3000_HAL_H_ */
