@@ -32,7 +32,7 @@ pkg.deps:
     - "@decawave-uwb-core/porting/dpl/mynewt"
 
 pkg.deps.CIR_ENABLED:
-    - "@decawave-uwb-dw3000-c0/lib/cir/cir_dw1000"
+    - "@decawave-uwb-dw3000-c0/lib/cir/cir_dw3000"
 
 pkg.apis:
     - UWB_HW_IMPL
