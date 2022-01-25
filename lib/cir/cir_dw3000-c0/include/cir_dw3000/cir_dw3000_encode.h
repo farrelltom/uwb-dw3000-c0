@@ -18,14 +18,14 @@
  */
 
 
-#ifndef _CIR_DW1000_ENCODE_H_
-#define _CIR_DW1000_ENCODE_H_
+#ifndef _CIR_DW3000_ENCODE_H_
+#define _CIR_DW3000_ENCODE_H_
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <json/json.h>
-#include <cir_dw1000/cir_dw1000.h>
+#include <cir_dw3000/cir_dw3000.h>
 
-void cir_dw1000_encode(struct cir_dw1000_instance * cir, char * name, uint16_t nsize);
+void cir_dw3000_encode(struct cir_dw3000_instance * cir, char * name, uint16_t nsize);
 
 #endif

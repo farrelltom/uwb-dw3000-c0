@@ -17,14 +17,14 @@
  * under the License.
  */
 
-#ifndef _CIR_DW1000_H_
-#define _CIR_DW1000_H_
+#ifndef _CIR_DW3000_H_
+#define _CIR_DW3000_H_
 
 #include <stdlib.h>
 #include <stdint.h>
 #include <os/os.h>
 #include <stats/stats.h>
-#include <dw1000/dw1000_dev.h>
+#include <dw3000-c0/dw3000_dev.h>
 #include <cir/cir.h>
 
 #ifdef __cplusplus
@@ -32,30 +32,30 @@ extern "C" {
 #endif
 
 #if MYNEWT_VAL(CIR_STATS)
-STATS_SECT_START(cir_dw1000_stat_section)
+STATS_SECT_START(cir_dw3000_stat_section)
     STATS_SECT_ENTRY(complete)
 STATS_SECT_END
 #endif
 
 typedef union{
-    struct  _cir_dw1000_complex_t{
+    struct  _cir_dw3000_complex_t{
         int16_t real;
         int16_t imag;
     }__attribute__((__packed__));
-    uint8_t array[sizeof(struct _cir_dw1000_complex_t)];
-}cir_dw1000_complex_t;
+    uint8_t array[sizeof(struct _cir_dw3000_complex_t)];
+}cir_dw3000_complex_t;
 
-typedef struct _cir_dw1000_t{
+typedef struct _cir_dw3000_t{
     uint8_t dummy;  //Errata
-    struct _cir_dw1000_complex_t array[MYNEWT_VAL(CIR_MAX_SIZE)];
-} __attribute__((packed, aligned(1))) cir_dw1000_t;
+    struct _cir_dw3000_complex_t array[MYNEWT_VAL(CIR_MAX_SIZE)];
+} __attribute__((packed, aligned(1))) cir_dw3000_t;
 
 
-struct cir_dw1000_instance{
+struct cir_dw3000_instance{
     struct cir_instance cir_inst;
-    struct _dw1000_dev_instance_t * dev_inst; //!< Structure of DW1000_dev_instance
+    struct _dw3000_dev_instance_t * dev_inst; //!< Structure of DW3000_dev_instance
 #if MYNEWT_VAL(CIR_STATS)
-    STATS_SECT_DECL(cir_dw1000_stat_section) stat; //!< Stats instance
+    STATS_SECT_DECL(cir_dw3000_stat_section) stat; //!< Stats instance
 #endif
     uint16_t fp_amp1;
     dpl_float32_t fp_idx;
@@ -70,18 +70,18 @@ struct cir_dw1000_instance{
 #endif
     uint16_t length;
     uint16_t offset;
-    cir_dw1000_t cir;
+    cir_dw3000_t cir;
 };
 
-struct cir_dw1000_instance * cir_dw1000_init(struct _dw1000_dev_instance_t * inst, struct cir_dw1000_instance * cir);
-dpl_float32_t cir_dw1000_remap_fp_index(struct cir_dw1000_instance *cir0, struct cir_dw1000_instance *cir1);
-bool cir_dw1000_reread_from_cir(dw1000_dev_instance_t * inst, struct cir_dw1000_instance *master_cir);
-void cir_dw1000_enable(struct cir_dw1000_instance * inst, bool mode);
-void cir_dw1000_free(struct cir_dw1000_instance * inst);
-dpl_float32_t cir_dw1000_get_pdoa(struct cir_dw1000_instance * master, struct cir_dw1000_instance *slave);
+struct cir_dw3000_instance * cir_dw3000_init(struct _dw3000_dev_instance_t * inst, struct cir_dw3000_instance * cir);
+dpl_float32_t cir_dw3000_remap_fp_index(struct cir_dw3000_instance *cir0, struct cir_dw3000_instance *cir1);
+bool cir_dw3000_reread_from_cir(dw3000_dev_instance_t * inst, struct cir_dw3000_instance *master_cir);
+void cir_dw3000_enable(struct cir_dw3000_instance * inst, bool mode);
+void cir_dw3000_free(struct cir_dw3000_instance * inst);
+dpl_float32_t cir_dw3000_get_pdoa(struct cir_dw3000_instance * master, struct cir_dw3000_instance *slave);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _CIR_DW1000_H_ */
+#endif /* _CIR_DW3000_H_ */

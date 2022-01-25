@@ -40,20 +40,20 @@
 #include <hal/hal_gpio.h>
 #include <stats/stats.h>
 
-#include <dw1000/dw1000_regs.h>
-#include <dw1000/dw1000_dev.h>
-#include <dw1000/dw1000_hal.h>
-#include <dw1000/dw1000_mac.h>
-#include <dw1000/dw1000_phy.h>
-#include <dw1000/dw1000_stats.h>
+#include <dw3000-c0/dw3000_regs.h>
+#include <dw3000-c0/dw3000_dev.h>
+#include <dw3000-c0/dw3000_hal.h>
+#include <dw3000-c0/dw3000_mac.h>
+#include <dw3000-c0/dw3000_phy.h>
+#include <dw3000-c0/dw3000_stats.h>
 #include <cir/cir_json.h>
-#include <cir_dw1000/cir_dw1000.h>
-#include <cir_dw1000/cir_dw1000_encode.h>
+#include <cir_dw3000-c0/cir_dw3000.h>
+#include <cir_dw3000-c0/cir_dw3000_encode.h>
 
 #if MYNEWT_VAL(CIR_STATS)
-STATS_NAME_START(cir_dw1000_stat_section)
-    STATS_NAME(cir_dw1000_stat_section, complete)
-STATS_NAME_END(cir_dw1000_stat_section)
+STATS_NAME_START(cir_dw3000_stat_section)
+    STATS_NAME(cir_dw3000_stat_section, complete)
+STATS_NAME_END(cir_dw3000_stat_section)
 #define CIR_STATS_INC(__X) STATS_INC(cir->stat, __X)
 #else
 #define CIR_STATS_INC(__X) {}
@@ -65,8 +65,8 @@ static void
 cir_complete_ev_cb(struct dpl_event *ev)
 {
     uint16_t i;
-    dw1000_dev_instance_t * inst = (dw1000_dev_instance_t *)dpl_event_get_arg(ev);
-    cir_dw1000_t * cir  = &inst->cir->cir;
+    dw3000_dev_instance_t * inst = (dw3000_dev_instance_t *)dpl_event_get_arg(ev);
+    cir_dw3000_t * cir  = &inst->cir->cir;
 
     struct cir_json json = {
         .type = "ipatov",
@@ -102,7 +102,7 @@ cir_complete_ev_cb(struct dpl_event *ev)
 
 
 /**
- * @fn cir_dw1000_remap_fp_index(struct cir_dw1000_instance *cir0, struct cir_dw1000_instance *cir1)
+ * @fn cir_dw3000_remap_fp_index(struct cir_dw3000_instance *cir0, struct cir_dw3000_instance *cir1)
  *
  * @brief Map cir0's fp_idx into cir1 and return it
  *
@@ -115,7 +115,7 @@ cir_complete_ev_cb(struct dpl_event *ev)
  * returns dpl_float32_t cir0.fp_idx as it would have been inside cir1
  */
 dpl_float32_t
-cir_dw1000_remap_fp_index(struct cir_dw1000_instance *cir0, struct cir_dw1000_instance *cir1)
+cir_dw3000_remap_fp_index(struct cir_dw3000_instance *cir0, struct cir_dw3000_instance *cir1)
 {
     dpl_float64_t raw_ts_diff, tmp, tmp64;
     dpl_float32_t fp_idx_0_given_1;
@@ -146,7 +146,7 @@ cir_dw1000_remap_fp_index(struct cir_dw1000_instance *cir0, struct cir_dw1000_in
 }
 
 /**
- * @fn read_from_acc(struct cir_dw1000_instance * cir, uint16_t fp_idx)
+ * @fn read_from_acc(struct cir_dw3000_instance * cir, uint16_t fp_idx)
  *
  * @brief Helper function to read CIR data from accumulator
  *
@@ -156,7 +156,7 @@ cir_dw1000_remap_fp_index(struct cir_dw1000_instance *cir0, struct cir_dw1000_in
  *
  */
 static void
-read_from_acc(struct cir_dw1000_instance * cir, uint16_t fp_idx)
+read_from_acc(struct cir_dw3000_instance * cir, uint16_t fp_idx)
 {
     /* Sanity check, only a fp_index within the accumulator makes sense */
     cir->offset = cir->dev_inst->uwb_dev.config.rx.cirOffset;
@@ -181,8 +181,8 @@ read_from_acc(struct cir_dw1000_instance * cir, uint16_t fp_idx)
     if(cir->length > MYNEWT_VAL(CIR_MAX_SIZE)) {
         cir->length = MYNEWT_VAL(CIR_MAX_SIZE);
     }
-    dw1000_read_accdata(cir->dev_inst, (uint8_t *)&cir->cir, (fp_idx - cir->offset) * sizeof(cir_dw1000_complex_t),
-                        1 + cir->length * sizeof(struct  _cir_dw1000_complex_t));
+    dw3000_read_accdata(cir->dev_inst, (uint8_t *)&cir->cir, (fp_idx - cir->offset) * sizeof(cir_dw3000_complex_t),
+                        1 + cir->length * sizeof(struct  _cir_dw3000_complex_t));
 
 #ifndef __KERNEL__
     cir->angle = atan2f((dpl_float32_t)cir->cir.array[cir->offset].imag,
@@ -197,16 +197,16 @@ read_from_acc(struct cir_dw1000_instance * cir, uint16_t fp_idx)
 }
 
 bool
-cir_dw1000_reread_from_cir(dw1000_dev_instance_t * inst, struct cir_dw1000_instance *master_cir)
+cir_dw3000_reread_from_cir(dw3000_dev_instance_t * inst, struct cir_dw3000_instance *master_cir)
 {
     /* CIR-data is lost already if the receiver has been turned back on */
     if (inst->uwb_dev.status.rx_restarted) {
         return false;
     }
-    struct cir_dw1000_instance * cir = inst->cir;
+    struct cir_dw3000_instance * cir = inst->cir;
 
     /* Correct aligment by remapping master_cir's fp_idx into our cir */
-    dpl_float32_t fp_idx_override  = cir_dw1000_remap_fp_index(master_cir, cir);
+    dpl_float32_t fp_idx_override  = cir_dw3000_remap_fp_index(master_cir, cir);
 
     /* Sanity check, only a fp_index within the accumulator makes sense */
     if(DPL_FLOAT32_INT(fp_idx_override) < 0 ||
@@ -242,27 +242,27 @@ cir_complete_cb(struct uwb_dev * udev, struct uwb_mac_interface * cbs)
 {
     uint16_t fp_idx, fp_idx_reg;
     dpl_float32_t _rcphase;
-    struct cir_dw1000_instance * cir = (struct cir_dw1000_instance *)cbs->inst_ptr;
-    struct _dw1000_dev_instance_t *inst = (struct _dw1000_dev_instance_t *)udev;
-    struct _dw1000_dev_instance_t *master_inst;
+    struct cir_dw3000_instance * cir = (struct cir_dw3000_instance *)cbs->inst_ptr;
+    struct _dw3000_dev_instance_t *inst = (struct _dw3000_dev_instance_t *)udev;
+    struct _dw3000_dev_instance_t *master_inst;
 
     cir->cir_inst.status.valid = 0;
     CIR_STATS_INC(complete);
 
-    cir->raw_ts = dw1000_read_rawrxtime(cir->dev_inst);
-    cir->resampler_delay = dw1000_read_reg(inst, RX_TTCKO_ID, 3, sizeof(uint8_t));
-    cir->fp_power = dw1000_get_fppl(inst);
+    cir->raw_ts = dw3000_read_rawrxtime(cir->dev_inst);
+    cir->resampler_delay = dw3000_read_reg(inst, RX_TTCKO_ID, 3, sizeof(uint8_t));
+    cir->fp_power = dw3000_get_fppl(inst);
 
     fp_idx_reg = inst->rxdiag.fp_idx;
     cir->pacc_cnt = inst->rxdiag.pacc_cnt;
     if(!inst->uwb_dev.config.rxdiag_enable) {
-        fp_idx_reg = dw1000_read_reg(cir->dev_inst, RX_TIME_ID, RX_TIME_FP_INDEX_OFFSET, sizeof(uint16_t));
-        cir->pacc_cnt = (dw1000_read_reg(inst, RX_FINFO_ID, 0, sizeof(uint32_t)) & RX_FINFO_RXPACC_MASK) >> RX_FINFO_RXPACC_SHIFT;
+        fp_idx_reg = dw3000_read_reg(cir->dev_inst, RX_TIME_ID, RX_TIME_FP_INDEX_OFFSET, sizeof(uint16_t));
+        cir->pacc_cnt = (dw3000_read_reg(inst, RX_FINFO_ID, 0, sizeof(uint32_t)) & RX_FINFO_RXPACC_MASK) >> RX_FINFO_RXPACC_SHIFT;
     }
     cir->fp_idx = DPL_FLOAT32_DIV(DPL_FLOAT32_I32_TO_F32(fp_idx_reg), DPL_FLOAT32_INIT(64.0f));
     fp_idx = DPL_FLOAT32_INT(DPL_FLOAT32_CEIL(cir->fp_idx));
 
-    master_inst = hal_dw1000_inst(0);
+    master_inst = hal_dw3000_inst(0);
     if (inst->uwb_dev.config.cir_pdoa_slave && master_inst->cir) {
         /* This unit is acting as part of a pdoa network of receivers.
          * instead of trusting the LDE of this unit, use the LDE that detected
@@ -270,13 +270,13 @@ cir_complete_cb(struct uwb_dev * udev, struct uwb_mac_interface * cbs)
          * each other (or rather their antennas).
          * */
 
-        struct cir_dw1000_instance * master_cir = master_inst->cir;
-        dpl_float32_t fp_idx_from_master  = cir_dw1000_remap_fp_index(master_cir, cir);
+        struct cir_dw3000_instance * master_cir = master_inst->cir;
+        dpl_float32_t fp_idx_from_master  = cir_dw3000_remap_fp_index(master_cir, cir);
 
         /* Check if our first path comes before the master's first path.
          * If so, reread the master's CIR data if possible */
         if (DPL_FLOAT32_INT(fp_idx_from_master) - DPL_FLOAT32_INT(cir->fp_idx) > MYNEWT_VAL(CIR_PDOA_SLAVE_MAX_LEAD)) {
-            bool b = cir_dw1000_reread_from_cir(hal_dw1000_inst(0), cir);
+            bool b = cir_dw3000_reread_from_cir(hal_dw3000_inst(0), cir);
             if (!b) {
                 return true;
             }
@@ -289,7 +289,7 @@ cir_complete_cb(struct uwb_dev * udev, struct uwb_mac_interface * cbs)
 
     read_from_acc(cir, fp_idx);
 
-    _rcphase = DPL_FLOAT32_I32_TO_F32((int32_t)dw1000_read_reg(cir->dev_inst, RX_TTCKO_ID, 4, sizeof(uint8_t)) & 0x7F);
+    _rcphase = DPL_FLOAT32_I32_TO_F32((int32_t)dw3000_read_reg(cir->dev_inst, RX_TTCKO_ID, 4, sizeof(uint8_t)) & 0x7F);
     cir->rcphase = DPL_FLOAT32_MUL(_rcphase, DPL_FLOAT32_INIT(M_PI/64.0f));
 
     cir->cir_inst.status.valid = 1;
@@ -316,29 +316,29 @@ cir_complete_cb(struct uwb_dev * udev, struct uwb_mac_interface * cbs)
  * returns void
  */
 void
-cir_dw1000_enable(struct cir_dw1000_instance * cir, bool mode)
+cir_dw3000_enable(struct cir_dw3000_instance * cir, bool mode)
 {
 #if MYNEWT_VAL(CIR_ENABLED)
-    dw1000_dev_instance_t * inst = cir->dev_inst;
+    dw3000_dev_instance_t * inst = cir->dev_inst;
     cir->cir_inst.status.valid = 0;
     inst->control.cir_enable = mode;
 #endif
 }
 
 /*!
- * @fn cir_dw1000_get_pdoa(struct cir_dw1000_instance * master, cir_dw1000_instance *slave)
+ * @fn cir_dw3000_get_pdoa(struct cir_dw3000_instance * master, cir_dw3000_instance *slave)
  *
  * @brief Calculate the phase difference between receivers
  *
- * @param master - struct cir_dw1000_instance *
- * @param slave  - struct cir_dw1000_instance *
+ * @param master - struct cir_dw3000_instance *
+ * @param slave  - struct cir_dw3000_instance *
  *
  * output parameters
  *
  * returns phase_difference - dpl_float32_t
  */
 dpl_float32_t
-cir_dw1000_get_pdoa(struct cir_dw1000_instance * master, struct cir_dw1000_instance *slave)
+cir_dw3000_get_pdoa(struct cir_dw3000_instance * master, struct cir_dw3000_instance *slave)
 {
 #ifndef __KERNEL__
     return fmodf((slave->angle - slave->rcphase) - (master->angle - master->rcphase) + 3*M_PI, 2*M_PI) - M_PI;
@@ -352,22 +352,22 @@ cir_dw1000_get_pdoa(struct cir_dw1000_instance * master, struct cir_dw1000_insta
 }
 
 /*!
- * @fn cir_dw1000_init(ir_instance_t * ccp)
+ * @fn cir_dw3000_init(ir_instance_t * ccp)
  *
  * @brief Allocate resources for the CIR instance.
  *
- * @param inst - struct cir_dw1000_instance *
+ * @param inst - struct cir_dw3000_instance *
  *
  * output parameters
  *
- * returns struct cir_dw1000_instance *
+ * returns struct cir_dw3000_instance *
  */
 
-struct cir_dw1000_instance *
-cir_dw1000_init(struct _dw1000_dev_instance_t * inst, struct cir_dw1000_instance * cir)
+struct cir_dw3000_instance *
+cir_dw3000_init(struct _dw3000_dev_instance_t * inst, struct cir_dw3000_instance * cir)
 {
     if (cir == NULL) {
-        cir = (struct cir_dw1000_instance *) calloc(1, sizeof(struct cir_dw1000_instance));
+        cir = (struct cir_dw3000_instance *) calloc(1, sizeof(struct cir_dw3000_instance));
         assert(cir);
         cir->cir_inst.status.selfmalloc = 1;
     }
@@ -380,13 +380,13 @@ cir_dw1000_init(struct _dw1000_dev_instance_t * inst, struct cir_dw1000_instance
     int rc = stats_init(
                 STATS_HDR(cir->stat),
                 STATS_SIZE_INIT_PARMS(cir->stat, STATS_SIZE_32),
-                STATS_NAME_INIT_PARMS(cir_dw1000_stat_section)
+                STATS_NAME_INIT_PARMS(cir_dw3000_stat_section)
             );
 
 #if  MYNEWT_VAL(UWB_DEVICE_0) && !MYNEWT_VAL(UWB_DEVICE_1)
     rc |= stats_register("cir", STATS_HDR(cir->stat));
 #elif  MYNEWT_VAL(UWB_DEVICE_0) && MYNEWT_VAL(UWB_DEVICE_1)
-    if (inst == hal_dw1000_inst(0))
+    if (inst == hal_dw3000_inst(0))
         rc |= stats_register("cir0", STATS_HDR(cir->stat));
     else
         rc |= stats_register("cir1", STATS_HDR(cir->stat));
@@ -397,19 +397,19 @@ cir_dw1000_init(struct _dw1000_dev_instance_t * inst, struct cir_dw1000_instance
 }
 
 /*!
- * @fn cir_dw1000_free(struct cir_dw1000_instance * inst)
+ * @fn cir_dw3000_free(struct cir_dw3000_instance * inst)
  *
  * @brief Free resources and restore default behaviour.
  *
  * input parameters
- * @param inst - struct cir_dw1000_instance * inst
+ * @param inst - struct cir_dw3000_instance * inst
  *
  * output parameters
  *
  * returns none
  */
 void
-cir_dw1000_free(struct cir_dw1000_instance * cir)
+cir_dw3000_free(struct cir_dw3000_instance * cir)
 {
     assert(cir);
     if (cir->cir_inst.status.selfmalloc) {
@@ -441,22 +441,22 @@ static struct uwb_mac_interface cbs[] = {
 #endif // MYNEWT_VAL(CIR_ENABLED)
 
 inline static dpl_float32_t
-map_cir_dw1000_get_pdoa(struct cir_instance * master, struct cir_instance *slave)
+map_cir_dw3000_get_pdoa(struct cir_instance * master, struct cir_instance *slave)
 {
-    return cir_dw1000_get_pdoa((struct cir_dw1000_instance*)master,
-                               (struct cir_dw1000_instance*)slave);
+    return cir_dw3000_get_pdoa((struct cir_dw3000_instance*)master,
+                               (struct cir_dw3000_instance*)slave);
 }
 
 inline static void
-map_cir_dw1000_enable(struct cir_instance * cir, bool mode)
+map_cir_dw3000_enable(struct cir_instance * cir, bool mode)
 {
-    return cir_dw1000_enable((struct cir_dw1000_instance*)cir, mode);
+    return cir_dw3000_enable((struct cir_dw3000_instance*)cir, mode);
 }
 
 #if MYNEWT_VAL(CIR_ENABLED) && (MYNEWT_VAL(UWB_DEVICE_0) || MYNEWT_VAL(UWB_DEVICE_1) || MYNEWT_VAL(UWB_DEVICE_2))
-static const struct cir_driver_funcs cir_dw1000_funcs = {
-    .cf_cir_get_pdoa = map_cir_dw1000_get_pdoa,
-    .cf_cir_enable = map_cir_dw1000_enable,
+static const struct cir_driver_funcs cir_dw3000_funcs = {
+    .cf_cir_get_pdoa = map_cir_dw3000_get_pdoa,
+    .cf_cir_enable = map_cir_dw3000_enable,
 };
 #endif
 
@@ -464,14 +464,14 @@ static const struct cir_driver_funcs cir_dw1000_funcs = {
  * API to initialise the cir package.
  * @return void
  */
-void cir_dw1000_pkg_init(void)
+void cir_dw3000_pkg_init(void)
 {
 #if MYNEWT_VAL(CIR_ENABLED)
     int i;
     struct uwb_dev *udev;
-    dw1000_dev_instance_t * inst;
+    dw3000_dev_instance_t * inst;
 #if MYNEWT_VAL(UWB_PKG_INIT_LOG)
-    printf("{\"utime\": %"PRIu32",\"msg\": \"cir_dw1000_pkg_init\"}\n",
+    printf("{\"utime\": %"PRIu32",\"msg\": \"cir_dw3000_pkg_init\"}\n",
            dpl_cputime_ticks_to_usecs(dpl_cputime_get32()));
 #endif
 
@@ -483,26 +483,26 @@ void cir_dw1000_pkg_init(void)
         if (udev->device_id != DWT_DEVICE_ID) {
             continue;
         }
-        inst = (dw1000_dev_instance_t *)udev;
-        cbs[i].inst_ptr = inst->cir = cir_dw1000_init(inst, NULL);
+        inst = (dw3000_dev_instance_t *)udev;
+        cbs[i].inst_ptr = inst->cir = cir_dw3000_init(inst, NULL);
         inst->uwb_dev.cir = (struct cir_instance*)inst->cir;
-        inst->cir->cir_inst.cir_funcs = &cir_dw1000_funcs;
+        inst->cir->cir_inst.cir_funcs = &cir_dw3000_funcs;
         uwb_mac_append_interface(udev, &cbs[i]);
     }
 #endif // MYNEWT_VAL(CIR_ENABLED)
 }
 
 /**
- * @fn cir_dw1000_pkg_down(void)
+ * @fn cir_dw3000_pkg_down(void)
  * @brief Uninitialise cir
  *
  * @return void
  */
-int cir_dw1000_pkg_down(int reason)
+int cir_dw3000_pkg_down(int reason)
 {
     int i;
     struct uwb_dev *udev;
-    struct cir_dw1000_instance *cir;
+    struct cir_dw3000_instance *cir;
 
     for (i = 0; i < MYNEWT_VAL(UWB_DEVICE_MAX); i++) {
         udev = uwb_dev_idx_lookup(i);
@@ -512,12 +512,12 @@ int cir_dw1000_pkg_down(int reason)
         if (udev->device_id != DWT_DEVICE_ID) {
             continue;
         }
-        cir = (struct cir_dw1000_instance*)uwb_mac_find_cb_inst_ptr(udev, UWBEXT_CIR);
+        cir = (struct cir_dw3000_instance*)uwb_mac_find_cb_inst_ptr(udev, UWBEXT_CIR);
         if (!cir) {
             continue;
         }
         uwb_mac_remove_interface(udev, cbs[i].id);
-        cir_dw1000_free(cir);
+        cir_dw3000_free(cir);
     }
 
     return 0;
