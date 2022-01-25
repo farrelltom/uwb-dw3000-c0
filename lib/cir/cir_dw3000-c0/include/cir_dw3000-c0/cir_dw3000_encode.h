@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <json/json.h>
-#include <cir_dw3000/cir_dw3000.h>
+#include <cir_dw3000-c0/cir_dw3000.h>
 
 void cir_dw3000_encode(struct cir_dw3000_instance * cir, char * name, uint16_t nsize);
 
